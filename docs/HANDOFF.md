@@ -1,23 +1,38 @@
-# HANDOFF - 2026-05-03 23:59
+# HANDOFF - 2026-05-04 23:59
 
 ## 완료
-- CrossFit 재활가이드 기획서 v3.md 작성 (docs/CrossFit 재활가이드 기획서 v3.md 아님 — Desktop에 있음)
-- 원페이지 기획서 작성 (docs/CrossFit 재활가이드 원페이지 기획서.md)
-- CLAUDE.md 생성 — 프로젝트 목표·핵심 원칙·v1 범위·성공 기준 설정
+- 챕터1(감별 질문) → 챕터2(직접 테스트) → 원인 → 재활 루트 플로우 구현
+- 12개 동작×부위 조합 전부 챕터2 테스트 추가 (physio-pedia 지식 기반, 맨몸 위주)
+- 203개 운동 전부 how(어떻게) 필드 추가 — 단계별 텍스트 설명
+- 203개 운동 why(왜) 전면 교체 — "통증 원인 + 하면 뭐가 좋아지나" 형식으로
+- 진행 상태 저장 (localStorage) — "이어서 하기" 버튼
+- 면책 문구 — 홈·원인·테스트·danger 화면
+- 단계별 예상 기간 (약 1~2주 등) 표시
+- 테스트 화면 "의료 진단이 아닙니다" 안내
+- danger 화면 복귀 안내 추가
+- 뒤로 가기 버튼 → 진행 바 우측 상단 원형 버튼으로 통합
+- index.html 더블클릭으로 바로 열리게 JSON 인라인 처리
+- NaN% 버그 수정 (S.maxDepth 미정의 제거)
 
 ## 진행중
-- docs 안의 원페이지 기획서 HOW 섹션이 기술 스택 버전(구버전)으로 남아있음
-  - 중단 지점: `docs/CrossFit 재활가이드 원페이지 기획서.md` HOW 섹션
-  - 다음 스텝: Desktop의 최신 버전(5개 작동 원칙)으로 덮어쓰기
+- 없음 (이번 세션 작업 모두 완료)
 
 ## 대기
-- 실제 웹 개발 착수 (기획 완료 후 다음 단계)
+- Firebase 커뮤니티 기능 — 사용자가 고민 중, 결정 후 진행
+- 동작 영상/이미지 — 저작권 문제로 보류
+- 영어 지원 — 콘텐츠 더 쌓인 후 진행
+- 복합 원인 대응 (발목+둔근 동시 등) — 미구현
 
 ## 결정사항 / 주의
-- 원페이지 기획서 포맷: Product One-Pager (Why/Who/What/How/Metrics/Risk)
-- HOW 섹션은 기술 스택이 아닌 서비스 작동 원칙 5개로 확정
-- docs 안 파일과 Desktop 파일이 버전 불일치 상태 — 다음 세션 시작 전 동기화 필요
-- 전체 기획서(v3)는 Desktop에만 있고 docs에는 없음 — 이동 여부 미결정
+- JSON을 index.html에 인라인 처리 중 — rehab.json 수정 시 반드시 아래 명령으로 재인라인 후 node 검증 필요:
+  ```python
+  init_pos = html.find('function init() {')
+  data_pos = html.find('  DATA = ', init_pos)
+  end_pos  = html.find(';\n  render();\n}', data_pos) + len(';\n  render();\n}')
+  html = html[:data_pos] + f'  DATA = {json_str};\n  render();\n}}' + html[end_pos:]
+  ```
+- PowerShell 정규식으로 인라인 금지 — 함수 날아가는 버그 있었음
+- 페르소나 피드백 받음 — 영상/이미지, 진행저장, 면책문구, 복합원인, 회복기간 → 영상/이미지 제외 전부 적용 완료
 
 ## 다음 세션 권장 첫 프롬프트
-`/resume` 후 "docs 원페이지 기획서 HOW 섹션을 Desktop 버전으로 업데이트하고 웹 개발 시작"
+`/resume` 후 "Firebase 커뮤니티 기능 연동할게요" 또는 "복합 원인 케이스 추가하자"

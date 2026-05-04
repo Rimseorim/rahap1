@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(node *)",
-      "Bash(curl -s http://localhost:3000)"
+      "Bash(curl -s http://localhost:3000)",
+      "WebFetch(domain:www.physio-pedia.com)",
+      "Bash(python3 *)",
+      "Bash(rm \"C:\\\\00.claude\\\\01.test\\\\_t.js\")",
+      "Bash(rm \"C:\\\\00.claude\\\\01.test\\\\fix_why.py\")",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }
