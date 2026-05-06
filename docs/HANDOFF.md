@@ -1,38 +1,24 @@
-# HANDOFF - 2026-05-04 23:59
+# HANDOFF - 2026-05-06 16:30
 
 ## 완료
-- 챕터1(감별 질문) → 챕터2(직접 테스트) → 원인 → 재활 루트 플로우 구현
-- 12개 동작×부위 조합 전부 챕터2 테스트 추가 (physio-pedia 지식 기반, 맨몸 위주)
-- 203개 운동 전부 how(어떻게) 필드 추가 — 단계별 텍스트 설명
-- 203개 운동 why(왜) 전면 교체 — "통증 원인 + 하면 뭐가 좋아지나" 형식으로
-- 진행 상태 저장 (localStorage) — "이어서 하기" 버튼
-- 면책 문구 — 홈·원인·테스트·danger 화면
-- 단계별 예상 기간 (약 1~2주 등) 표시
-- 테스트 화면 "의료 진단이 아닙니다" 안내
-- danger 화면 복귀 안내 추가
-- 뒤로 가기 버튼 → 진행 바 우측 상단 원형 버튼으로 통합
-- index.html 더블클릭으로 바로 열리게 JSON 인라인 처리
-- NaN% 버그 수정 (S.maxDepth 미정의 제거)
+- Python 설치 및 PATH 설정 (앱 실행 별칭 해제)
+- ~/.claude/settings.json hook 경로 수정 (`김서림` → `tjfla`) — Stop/SessionStart/UserPromptSubmit 3개
 
 ## 진행중
-- 없음 (이번 세션 작업 모두 완료)
+- why 재작성 준비 중 — 레퍼런스 탐색 단계에서 중단
+  - 중단 지점: `index.html` 내 "why" 필드 (328번 줄~)
+  - 다음 스텝: Squat University 자료 찾아서 붙여주면 원인 유형 3개(발목가동성·둔근활성화·과부하) why 일괄 재작성
 
 ## 대기
-- Firebase 커뮤니티 기능 — 사용자가 고민 중, 결정 후 진행
-- 동작 영상/이미지 — 저작권 문제로 보류
-- 영어 지원 — 콘텐츠 더 쌓인 후 진행
-- 복합 원인 대응 (발목+둔근 동시 등) — 미구현
+- Firebase 커뮤니티 기능
+- 복합 원인 케이스 (발목+둔근 동시)
+- 동작 영상/이미지
 
 ## 결정사항 / 주의
-- JSON을 index.html에 인라인 처리 중 — rehab.json 수정 시 반드시 아래 명령으로 재인라인 후 node 검증 필요:
-  ```python
-  init_pos = html.find('function init() {')
-  data_pos = html.find('  DATA = ', init_pos)
-  end_pos  = html.find(';\n  render();\n}', data_pos) + len(';\n  render();\n}')
-  html = html[:data_pos] + f'  DATA = {json_str};\n  render();\n}}' + html[end_pos:]
-  ```
-- PowerShell 정규식으로 인라인 금지 — 함수 날아가는 버그 있었음
-- 페르소나 피드백 받음 — 영상/이미지, 진행저장, 면책문구, 복합원인, 회복기간 → 영상/이미지 제외 전부 적용 완료
+- Barbell Rehab 운영자는 Michael Mash (유료), Jordan Shallow는 별개 인물
+- why 재작성 레퍼런스: Squat University (Aaron Horschig) 우선 — 무료, 크로스핏 특화
+- JSON 인라인 수정 시 Python 스크립트로만 처리 (PowerShell 정규식 금지)
+- hook 파일 위치: `C:/Users/tjfla/.claude/hooks/` (3개 py 파일 존재 확인)
 
 ## 다음 세션 권장 첫 프롬프트
-`/resume` 후 "Firebase 커뮤니티 기능 연동할게요" 또는 "복합 원인 케이스 추가하자"
+`/resume` 후 "Squat University 자료 여기 있어요" + 붙여넣기
