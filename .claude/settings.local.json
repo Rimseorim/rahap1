@@ -8,7 +8,8 @@
       "Bash(rm \"C:\\\\00.claude\\\\01.test\\\\_t.js\")",
       "Bash(rm \"C:\\\\00.claude\\\\01.test\\\\fix_why.py\")",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(git config *)"
     ]
   }
 }

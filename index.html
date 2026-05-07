@@ -7,8 +7,8 @@
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
   <style>
     :root {
-      --navy:       #1B2D5E;
-      --navy-light: #2B4490;
+      --navy:       #2C2C2C;
+      --navy-light: #444444;
       --accent:     #4A7FC1;
       --bg:         #F5F6FA;
       --card:       #FFFFFF;
@@ -36,12 +36,12 @@
     .progress-wrap {
       position: sticky; top: 0; z-index: 10;
       background: var(--card); padding: 14px 20px 10px;
-      border-bottom: 1px solid #F0F0F0;
+      border-bottom: 1px solid var(--border);
     }
     .progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; }
     .progress-label span { font-size: var(--t4); font-weight: var(--w4); color: var(--text-sub); }
     .progress-label span:last-child { font-weight: 600; color: var(--navy-light); }
-    .progress-track { height: 6px; background: #E5E7EB; border-radius: 99px; overflow: hidden; }
+    .progress-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
     .progress-fill { height: 100%; background: var(--navy-light); border-radius: 99px; transition: width 0.3s ease; }
 
     /* Screen */
@@ -104,8 +104,8 @@
     /* Exercise Card */
     .exercise-card {
       background: var(--card); border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 18px 20px;
-      display: flex; flex-direction: column; gap: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;
     }
     .exercise-card h3 { font-size: var(--t2); font-weight: var(--w2); }
     .why-label { font-size: var(--t4); font-weight: 600; color: var(--accent); letter-spacing: 0.04em; }
@@ -213,6 +213,7 @@ const S = {
   causeId: null,
   stageIndex: 0,
   questionDepth: 0,
+  isRedFlagDanger: false,
 };
 
 /* ── 데이터 로드 (fetch → inline fallback) ── */
@@ -5535,11 +5536,11 @@ const INTENSITY_DESC = {
 
 /* ── 진행률 ── */
 const PROGRESS = {
-  home: 0, pain_site: 12, pain_intensity: 25, movement: 38,
-  question: 52, test: 68, cause: 80, route: 90, complete: 100, danger: 50
+  home: 0, pain_site: 10, red_flag: 20, pain_intensity: 30, movement: 40,
+  question: 55, test: 70, cause: 82, route: 92, complete: 100, danger: 50
 };
 const LABEL = {
-  pain_site: '통증 부위', pain_intensity: '통증 강도', movement: '동작 선택',
+  pain_site: '통증 부위', red_flag: '위험 신호 확인', pain_intensity: '통증 강도', movement: '동작 선택',
   question: '챕터1 · 감별 질문', test: '챕터2 · 직접 테스트',
   cause: '원인 확정', route: '재활 루트', complete: '완료', danger: '주의'
 };
@@ -5548,8 +5549,18 @@ function updateProgress(screen) {
   const bar = el('progress-bar');
   if (screen === 'home') { bar.style.display = 'none'; return; }
   bar.style.display = 'block';
-  let pct = PROGRESS[screen] || 50;
-  el('pb-label').textContent = LABEL[screen] || '';
+  let pct, label;
+  if ((screen === 'route' || screen === 'complete') && S.causeId) {
+    const total = getCause().route.stages.length;
+    const base  = PROGRESS['cause'] || 82;
+    const idx   = screen === 'complete' ? S.stageIndex + 1 : S.stageIndex;
+    pct   = Math.round(base + (idx / total) * (100 - base));
+    label = LABEL[screen] || '';
+  } else {
+    pct   = PROGRESS[screen] || 50;
+    label = LABEL[screen] || '';
+  }
+  el('pb-label').textContent = label;
   el('pb-pct').textContent = pct + '%';
   el('pb-fill').style.width = pct + '%';
 }
@@ -5558,7 +5569,7 @@ function updateProgress(screen) {
 function render() {
   updateProgress(S.screen);
   window.scrollTo(0, 0);
-  const screens = { home, pain_site, pain_intensity, movement, question, test, cause, route, danger, complete };
+  const screens = { home, pain_site, red_flag, pain_intensity, movement, question, test, cause, route, danger, complete };
   el('main-screen').innerHTML = (screens[S.screen] || home)();
 }
 
@@ -5598,6 +5609,28 @@ function pain_site() {
       <p class="t3" style="margin-top:8px">가장 통증이 심한 부위 하나를 선택하세요.</p>
     </div>
     <div class="choices">${btns}</div>`;
+}
+
+function red_flag() {
+  const flags = [
+    { text: '관절이 눈에 띄게 부어있어요', sub: '운동 후뿐 아니라 지금도 부어있는 경우' },
+    { text: '만지면 열감이 느껴져요', sub: '다른 쪽 관절과 비교했을 때 확실히 따뜻함' },
+    { text: '자다가 통증에 깬 적 있어요', sub: '야간 통증 · 안정 시에도 지속되는 통증' },
+    { text: '관절이 걸리거나 갑자기 힘이 빠져요', sub: '잠김(locking) · 순간 탈력(giving way)' },
+    { text: '최근 넘어지거나 강하게 부딪혔어요', sub: '낙상 · 충돌 · 외상 후 통증' },
+  ];
+  const btns = flags.map(f => `
+    <button class="choice-btn" style="border-color:var(--danger);color:var(--danger)" onclick="triggerRedFlagDanger()">
+      <span style="color:var(--danger);font-weight:700;font-size:18px">!</span>
+      <span>${f.text}<span class="sub">${f.sub}</span></span>
+    </button>`).join('');
+  return `
+    <div>
+      <h1 class="t1">먼저 확인하세요</h1>
+      <p class="t3" style="margin-top:8px">아래 증상 중 하나라도 해당되면 자가 재활 전에 병원을 먼저 방문해야 합니다.</p>
+    </div>
+    <div class="choices">${btns}</div>
+    <button class="btn-primary" onclick="go('pain_intensity')">해당 없음 · 다음으로</button>`;
 }
 
 function pain_intensity() {
@@ -5681,7 +5714,7 @@ function test() {
     </div>
     <div class="card" style="display:flex;flex-direction:column;gap:14px">
       ${steps}
-      ${t.note ? `<p style="font-size:var(--t4);color:var(--accent);border-top:1px solid #F0F0F0;padding-top:10px;margin-top:2px">● ${t.note}</p>` : ''}
+      ${t.note ? `<p style="font-size:var(--t4);color:var(--accent);border-top:1px solid var(--border);padding-top:10px;margin-top:2px">● ${t.note}</p>` : ''}
     </div>
     <p class="t4" style="text-align:center;font-weight:600">결과를 선택하세요</p>
     <div class="choices">
@@ -5723,7 +5756,10 @@ function route() {
 
   const stageIndicator = stages.map((st, i) => {
     const cls = i < S.stageIndex ? 'done' : i === S.stageIndex ? 'active' : '';
-    return `<div class="stage-item ${cls}">${i + 1} ${st.name}</div>`;
+    const clickable = i <= S.stageIndex;
+    return clickable
+      ? `<button class="stage-item ${cls}" onclick="jumpToStage(${i})" style="cursor:pointer;font-family:inherit">${i + 1} ${st.name}</button>`
+      : `<div class="stage-item ${cls}">${i + 1} ${st.name}</div>`;
   }).join('');
 
   const exercises = stage.exercises.map(ex => {
@@ -5757,7 +5793,7 @@ function route() {
     </div>
     <div style="display:flex;align-items:center;gap:10px;padding:4px 0">
       <span style="font-size:var(--t2);font-weight:var(--w2)">${stage.name} 단계</span>
-      ${stage.duration ? `<span style="font-size:var(--t4);color:var(--text-sub);background:#F3F4F6;border-radius:99px;padding:2px 10px">약 ${stage.duration}</span>` : ''}
+      ${stage.duration ? `<span style="font-size:var(--t4);color:var(--text-sub);background:var(--border);border-radius:99px;padding:2px 10px">약 ${stage.duration}</span>` : ''}
     </div>
     ${exercises}
     <button class="btn-primary" onclick="${isLast ? "go('complete')" : 'nextStage()'}">
@@ -5766,18 +5802,28 @@ function route() {
 }
 
 function danger() {
-  const d = getPainSite().danger;
+  let title, reason, action;
+  if (S.isRedFlagDanger) {
+    title  = '지금 바로 운동을 멈추세요';
+    reason = '선택하신 증상은 자가 재활 전 전문의 진단이 필요한 신호입니다. 부기·열감·야간 통증·관절 잠김·외상 후 통증은 연골, 인대, 골 손상을 동반할 수 있어 재활 운동을 먼저 진행하면 증상이 악화될 수 있습니다.';
+    action = '정형외과 또는 스포츠의학과를 방문하세요. 증상 발생 시점, 부위, 해당 동작을 메모해 가면 진단에 도움이 됩니다.';
+  } else {
+    const d = getPainSite().danger;
+    title  = d.title;
+    reason = d.reason;
+    action = d.action;
+  }
   return `
     <div style="background:var(--danger-bg);margin:-24px -20px 0;padding:24px 20px;flex:none">
-      <h1 class="t1" style="color:var(--danger)">${d.title}</h1>
+      <h1 class="t1" style="color:var(--danger)">${title}</h1>
     </div>
     <div class="danger-alert">
       <h2>병원 진료가 필요합니다</h2>
-      <p>${d.reason}</p>
-      <p style="font-size:var(--t4);color:var(--text-sub)">${d.action}</p>
+      <p>${reason}</p>
+      <p style="font-size:var(--t4);color:var(--text-sub)">${action}</p>
     </div>
     <div class="card" style="text-align:center;display:flex;flex-direction:column;gap:6px">
-      <p style="font-size:var(--t3);color:var(--text-sub)">통증이 가라앉고 <b>안정 시 통증이 없어지면</b> 앱으로 돌아와 다시 감별해보세요.</p>
+      <p style="font-size:var(--t3);color:var(--text-sub)">증상이 안정되고 <b>안정 시 통증이 없어지면</b> 앱으로 돌아와 다시 감별해보세요.</p>
       <p style="font-size:var(--t4);color:var(--text-sub)">재활 루트는 전문가 진료 후 병행할 수 있습니다.</p>
     </div>
     <button class="btn-danger" onclick="reset()">처음으로 돌아가기</button>`;
@@ -5790,7 +5836,10 @@ function complete() {
 
   const stageIndicator = stages.map((st, i) => {
     const cls = i <= S.stageIndex ? 'done' : i === S.stageIndex + 1 ? 'active' : '';
-    return `<div class="stage-item ${cls}">${i + 1} ${st.name}</div>`;
+    const clickable = i <= S.stageIndex;
+    return clickable
+      ? `<button class="stage-item ${cls}" onclick="jumpToStage(${i})" style="cursor:pointer;font-family:inherit">${i + 1} ${st.name}</button>`
+      : `<div class="stage-item ${cls}">${i + 1} ${st.name}</div>`;
   }).join('');
 
   const nextStage = stages[S.stageIndex + 1];
@@ -5807,20 +5856,22 @@ function complete() {
       </div>
       <div class="stage-wrap" style="justify-content:center">${stageIndicator}</div>
       ${nextStage ? `
-        <div class="card" style="text-align:center;display:flex;flex-direction:column;gap:4px">
-          <p class="t4">다음 단계</p>
-          <p class="t2">${S.stageIndex + 2}단계 · ${nextStage.name}</p>
+        <div class="card" style="display:flex;flex-direction:column;gap:6px">
+          <p class="t4" style="text-align:center">다음 단계</p>
+          <p class="t2" style="text-align:center">${S.stageIndex + 2}단계 · ${nextStage.name}</p>
+          ${stages[S.stageIndex].duration ? `<p style="font-size:var(--t4);color:var(--text-sub);text-align:center;border-top:1px solid var(--border);padding-top:8px;margin-top:2px"><b>${stages[S.stageIndex].name} 단계</b>를 <b>${stages[S.stageIndex].duration}</b> 동안 반복한 뒤 넘어가세요.</p>` : ''}
         </div>` : ''}
     </div>
     ${nextStage
-      ? `<button class="btn-primary" onclick="goNextStageFromComplete()">다음 단계 시작</button>`
+      ? `<button class="btn-primary" onclick="goNextStageFromComplete()">다음 단계 시작</button>
+         <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="go('route')">이 단계 운동 다시 보기</button>`
       : ''}
     <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="reset()">처음으로 돌아가기</button>`;
 }
 
 /* ── 액션 ── */
 const BACK_MAP = {
-  pain_site: 'home', pain_intensity: 'pain_site', movement: 'pain_intensity',
+  pain_site: 'home', red_flag: 'pain_site', pain_intensity: 'red_flag', movement: 'pain_intensity',
   question: 'movement', test: 'question',
   cause: null, // dynamic: test or question
   route: 'cause', complete: 'route', danger: 'home'
@@ -5844,7 +5895,7 @@ function selectPainSite(id) {
   S.causeId      = null;
   S.stageIndex   = 0;
   S.questionDepth = 0;
-  go('pain_intensity');
+  go('red_flag');
 }
 
 function selectIntensity(n) {
@@ -5857,6 +5908,11 @@ function selectMovement(id) {
   S.questionId   = getPainSite().entry_question;
   S.questionDepth = 0;
   go('question');
+}
+
+function triggerRedFlagDanger() {
+  S.isRedFlagDanger = true;
+  go('danger');
 }
 
 function selectChoice(next) {
@@ -5891,6 +5947,11 @@ function nextStage() {
   go('complete');
 }
 
+function jumpToStage(i) {
+  S.stageIndex = i;
+  go('route');
+}
+
 function goNextStageFromComplete() {
   S.stageIndex++;
   go('route');
@@ -5900,7 +5961,7 @@ function reset() {
   Object.assign(S, {
     screen: 'home', painSiteId: null, painIntensity: null,
     movementId: null, questionId: null, testId: null, causeId: null,
-    stageIndex: 0, questionDepth: 0
+    stageIndex: 0, questionDepth: 0, isRedFlagDanger: false
   });
   localStorage.removeItem('rehab_progress');
   render();
