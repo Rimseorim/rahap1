@@ -1,0 +1,72 @@
+[
+  {
+    "id": "back-squat",
+    "name": "백스쿼트",
+    "pain_sites": [
+      {
+        "id": "knee",
+        "name": "무릎"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "ankle",
+        "name": "발목"
+      },
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      }
+    ]
+  },
+  {
+    "id": "front-squat",
+    "name": "프론트스쿼트",
+    "pain_sites": [
+      {
+        "id": "knee",
+        "name": "무릎"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "ankle",
+        "name": "발목"
+      },
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      },
+      {
+        "id": "wrist",
+        "name": "손목"
+      }
+    ]
+  },
+  {
+    "id": "overhead-squat",
+    "name": "오버헤드스쿼트",
+    "pain_sites": [
+      {
+        "id": "knee",
+        "name": "무릎"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "ankle",
+        "name": "발목"
+      },
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      }
+    ]
+  }
+]
