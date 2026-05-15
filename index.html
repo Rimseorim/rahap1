@@ -147,27 +147,6 @@
     }
     .complete-wrap { text-align: center; padding: 12px 0; }
 
-    /* Pain Intensity */
-    .intensity-grid {
-      display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
-    }
-    .intensity-btn {
-      aspect-ratio: 1; border-radius: 10px; border: 2px solid var(--border);
-      background: var(--card); font-family: inherit;
-      font-size: var(--t2); font-weight: var(--w2); cursor: pointer;
-      transition: all 0.15s; color: var(--text);
-    }
-    .intensity-btn.low          { border-color: #16A34A; color: #16A34A; }
-    .intensity-btn.mid          { border-color: #D97706; color: #D97706; }
-    .intensity-btn.high         { border-color: #DC2626; color: #DC2626; }
-    .intensity-btn.low.selected  { background: #16A34A; color: white; }
-    .intensity-btn.mid.selected  { background: #D97706; color: white; }
-    .intensity-btn.high.selected { background: #DC2626; color: white; }
-    .intensity-desc {
-      text-align: center; padding: 12px;
-      font-size: var(--t3); font-weight: 600; border-radius: 10px;
-      transition: all 0.2s;
-    }
 
     /* Scroll top on nav */
     html { scroll-behavior: smooth; }
@@ -283,8 +262,8 @@ async function doSignup(e) {
   } catch(err) { errEl.textContent = err.message; }
 }
 
-function logout() { clearUser(); sessionStorage.removeItem('guest'); render(); }
-function guestMode() { sessionStorage.setItem('guest', '1'); go('pain_site'); }
+function logout() { clearUser(); render(); }
+function naverLogin() { window.location.href = `${API}/auth/naver/login`; }
 
 let MY_RECORDS = null;
 
@@ -374,6 +353,17 @@ let MANIFEST = null;
 let LAST_RECORD = null;
 
 async function init() {
+  // 네이버 OAuth 콜백 처리
+  const params = new URLSearchParams(location.search);
+  const isOAuthReturn = !!params.get('naver_token');
+  if (isOAuthReturn) {
+    saveUser({ token: params.get('naver_token'), nickname: params.get('naver_nickname') || '사용자' });
+    history.replaceState({}, '', location.pathname);
+    S.screen = 'home';
+  } else if (params.get('error')) {
+    history.replaceState({}, '', location.pathname);
+  }
+
   MANIFEST = await fetch('data/movements/manifest.json').then(r => r.json());
   if (USER) {
     try {
@@ -381,10 +371,12 @@ async function init() {
       LAST_RECORD = records.length ? records[records.length - 1] : null;
     } catch(e) { LAST_RECORD = null; }
   }
-  const saved = loadProgress();
-  if (saved && saved.movementId) {
-    DATA = await fetch(`data/movements/${saved.movementId}.json`).then(r => r.json());
-    Object.assign(S, saved);
+  if (!isOAuthReturn) {
+    const saved = loadProgress();
+    if (saved && saved.movementId) {
+      DATA = await fetch(`data/movements/${saved.movementId}.json`).then(r => r.json());
+      Object.assign(S, saved);
+    }
   }
   render();
 }
@@ -414,19 +406,14 @@ function getMovementsForSite() {
   return MANIFEST.filter(m => m.pain_sites.some(p => p.id === S.painSiteId));
 }
 
-const INTENSITY_DESC = {
-  1:'거의 없음', 2:'거의 없음', 3:'약함',
-  4:'약함', 5:'보통', 6:'보통',
-  7:'심함', 8:'심함', 9:'매우 심함', 10:'매우 심함'
-};
 
 /* ── 진행률 ── */
 const PROGRESS = {
-  home: 0, pain_site: 10, red_flag: 20, pain_intensity: 30, movement: 40,
+  home: 0, pain_site: 10, red_flag: 20, movement: 30,
   question: 55, test: 70, cause: 82, route: 92, complete: 100, danger: 50
 };
 const LABEL = {
-  pain_site: '통증 부위', red_flag: '위험 신호 확인', pain_intensity: '통증 강도', movement: '동작 선택',
+  pain_site: '통증 부위', red_flag: '위험 신호 확인', movement: '동작 선택',
   question: '챕터1 · 감별 질문', test: '챕터2 · 직접 테스트',
   cause: '원인 확정', route: '재활 루트', complete: '완료', danger: '주의'
 };
@@ -454,13 +441,12 @@ function updateProgress(screen) {
 /* ── 렌더 ── */
 function render() {
   const publicScreens = ['landing', 'login', 'signup'];
-  const isGuest = sessionStorage.getItem('guest');
-  if (!USER && !isGuest && !publicScreens.includes(S.screen)) {
+  if (!USER && !publicScreens.includes(S.screen)) {
     S.screen = 'landing';
   }
   updateProgress(S.screen);
   window.scrollTo(0, 0);
-  const screens = { landing, home, login, signup, my_records, pain_site, red_flag, pain_intensity, movement, question, test, cause, route, danger, complete };
+  const screens = { landing, home, login, signup, my_records, pain_site, red_flag, movement, question, test, cause, route, danger, complete };
   el('main-screen').innerHTML = (screens[S.screen] || landing)();
 }
 
@@ -495,7 +481,7 @@ function landing() {
     </div>
 
     <button class="btn-primary" style="font-size:var(--t2);padding:16px" onclick="go('login')">시작하기</button>
-    <button class="btn-primary" style="background:transparent;color:var(--text-sub);border:1px solid var(--border)" onclick="guestMode()">로그인 없이 둘러보기</button>
+
     <p style="text-align:center;font-size:var(--t4);color:var(--text-sub);line-height:1.6;padding:0 8px">이 앱은 재활 보조 도구이며<br>전문가 진단을 대체하지 않습니다</p>`;
 }
 
@@ -558,6 +544,15 @@ function login() {
           <button type="submit" class="btn-primary">로그인</button>
         </form>
         <button class="btn-primary" style="background:var(--navy-light)" onclick="go('signup')">회원가입</button>
+        <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <span style="font-size:var(--t4);color:var(--text-sub)">또는</span>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+        </div>
+        <button class="btn-primary" style="background:#03C75A;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px" onclick="naverLogin()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
+          네이버로 로그인
+        </button>
       </div>
     </div>
     <div class="card" style="font-size:var(--t4);color:var(--text-sub);line-height:1.8">
@@ -626,42 +621,9 @@ function red_flag() {
       <p class="t3" style="margin-top:8px">아래 증상 중 하나라도 해당되면 자가 재활 전에 병원을 먼저 방문해야 합니다.</p>
     </div>
     <div class="choices">${btns}</div>
-    <button class="btn-primary" onclick="go('pain_intensity')">해당 없음 · 다음으로</button>`;
+    <button class="btn-primary" onclick="go('movement')">해당 없음 · 다음으로</button>`;
 }
 
-function pain_intensity() {
-  const sel = S.painIntensity;
-  const desc = sel ? INTENSITY_DESC[sel] : null;
-  const isHigh = sel >= 9;
-
-  const nums = Array.from({length:10}, (_,i) => {
-    const n = i + 1;
-    const cls = n <= 3 ? 'low' : n <= 6 ? 'mid' : 'high';
-    const active = sel === n ? 'selected' : '';
-    return `<button class="intensity-btn ${cls} ${active}" onclick="selectIntensity(${n})">${n}</button>`;
-  }).join('');
-
-  const descColor = !sel ? '' : sel <= 3 ? '#16A34A' : sel <= 6 ? '#D97706' : '#DC2626';
-  const descBg    = !sel ? '' : sel <= 3 ? '#F0FDF4' : sel <= 6 ? '#FFFBEB' : '#FEF2F2';
-
-  return `
-    <div>
-      <h1 class="t1">지금 통증이<br>얼마나 심한가요?</h1>
-      <p class="t3" style="margin-top:8px">운동 중 가장 심할 때 기준으로 선택하세요.</p>
-    </div>
-    <div class="card" style="gap:16px;display:flex;flex-direction:column">
-      <div style="display:flex;justify-content:space-between;font-size:var(--t4);color:var(--text-sub)">
-        <span>1 · 통증 없음</span><span>10 · 극심한 통증</span>
-      </div>
-      <div class="intensity-grid">${nums}</div>
-      ${sel ? `
-        <div class="intensity-desc" style="color:${descColor};background:${descBg}">
-          ${sel}점 · ${desc}
-          ${isHigh ? '<br><span style="font-size:var(--t4)">병원 진료를 먼저 고려해보세요</span>' : ''}
-        </div>` : '<div style="height:44px"></div>'}
-    </div>
-    <button class="btn-primary" ${sel ? '' : 'disabled'} onclick="go('movement')">다음</button>`;
-}
 
 const MOVEMENT_ICONS = { 'back-squat': '🏋️', 'front-squat': '🏋️', 'overhead-squat': '🙌' };
 const MOVEMENT_DESC  = { 'back-squat': 'Back Squat', 'front-squat': 'Front Squat', 'overhead-squat': 'Overhead Squat' };
@@ -867,7 +829,7 @@ function complete() {
 
 /* ── 액션 ── */
 const BACK_MAP = {
-  pain_site: 'home', red_flag: 'pain_site', pain_intensity: 'red_flag', movement: 'pain_intensity',
+  pain_site: 'home', red_flag: 'pain_site', movement: 'red_flag',
   question: 'movement', test: 'question',
   cause: null, // dynamic: test or question
   route: 'cause', complete: 'route', danger: 'home'
@@ -894,10 +856,6 @@ function selectPainSite(id) {
   go('red_flag');
 }
 
-function selectIntensity(n) {
-  S.painIntensity = n;
-  render();  // 강도만 다시 그림 (화면 전환 X)
-}
 
 async function selectMovement(id) {
   DATA = await fetch(`data/movements/${id}.json`).then(r => r.json());
@@ -965,7 +923,8 @@ function reset() {
 }
 
 /* ── 시작 ── */
-init();
+render();
+init().catch(e => console.error('[init error]', e));
 </script>
 </body>
 </html>
