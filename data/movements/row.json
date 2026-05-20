@@ -1,0 +1,11 @@
+{
+  "id": "row",
+  "name": "로우",
+  "coming_soon": true,
+  "pain_sites": [
+    { "id": "lower-back", "name": "허리", "coming_soon": true, "entry_question": null, "questions": [], "tests": [], "causes": [] },
+    { "id": "shoulder", "name": "어깨", "coming_soon": true, "entry_question": null, "questions": [], "tests": [], "causes": [] },
+    { "id": "wrist", "name": "손목", "coming_soon": true, "entry_question": null, "questions": [], "tests": [], "causes": [] },
+    { "id": "elbow", "name": "팔꿈치", "coming_soon": true, "entry_question": null, "questions": [], "tests": [], "causes": [] }
+  ]
+}

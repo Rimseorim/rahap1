@@ -285,13 +285,14 @@ async function deleteRecord(id) {
 async function goMyRecords() {
   try {
     const res = await fetch(`${API}/records/mine?token=${USER.token}`);
-    MY_RECORDS = await res.json();
+    const data = await res.json();
+    MY_RECORDS = Array.isArray(data) ? data : [];
   } catch(e) { MY_RECORDS = []; }
   go('my_records');
 }
 
 function my_records() {
-  const movementNames = { 'back-squat': '백스쿼트', 'front-squat': '프론트스쿼트', 'overhead-squat': '오버헤드스쿼트' };
+  const movementNames = { 'squat': '스쿼트', 'lunge': '런지', 'deadlift': '데드리프트' };
   const painNames = { knee: '무릎', 'lower-back': '허리', ankle: '발목', shoulder: '어깨', wrist: '손목' };
   const causeLabels = {
     'cause-a': 'Case A', 'cause-b': 'Case B', 'cause-c': 'Case C',
@@ -410,7 +411,7 @@ function getMovementsForSite() {
 /* ── 진행률 ── */
 const PROGRESS = {
   home: 0, pain_site: 10, red_flag: 20, movement: 30,
-  question: 55, test: 70, cause: 82, route: 92, complete: 100, danger: 50
+  question: 55, test: 70, cause: 82, route: 92, complete: 100, danger: 50, coming_soon: 35
 };
 const LABEL = {
   pain_site: '통증 부위', red_flag: '위험 신호 확인', movement: '동작 선택',
@@ -446,7 +447,7 @@ function render() {
   }
   updateProgress(S.screen);
   window.scrollTo(0, 0);
-  const screens = { landing, home, login, signup, my_records, pain_site, red_flag, movement, question, test, cause, route, danger, complete };
+  const screens = { landing, home, login, signup, my_records, pain_site, red_flag, movement, question, test, cause, route, danger, complete, coming_soon };
   el('main-screen').innerHTML = (screens[S.screen] || landing)();
 }
 
@@ -486,7 +487,7 @@ function landing() {
 }
 
 function home() {
-  const movementNames = { 'back-squat': '백스쿼트', 'front-squat': '프론트스쿼트', 'overhead-squat': '오버헤드스쿼트' };
+  const movementNames = { 'squat': '스쿼트', 'lunge': '런지', 'deadlift': '데드리프트' };
   const painNames = { knee: '무릎', 'lower-back': '허리', ankle: '발목', shoulder: '어깨', wrist: '손목' };
 
   const lastCard = LAST_RECORD ? (() => {
@@ -617,8 +618,8 @@ function red_flag() {
 }
 
 
-const MOVEMENT_ICONS = { 'back-squat': '🏋️', 'front-squat': '🏋️', 'overhead-squat': '🙌' };
-const MOVEMENT_DESC  = { 'back-squat': 'Back Squat', 'front-squat': 'Front Squat', 'overhead-squat': 'Overhead Squat' };
+const MOVEMENT_ICONS = { 'squat': '🏋️', 'lunge': '🦵', 'deadlift': '💪', 'pullup': '🙌', 'kipping': '🙌', 'press': '🏋️', 'row': '💪' };
+const MOVEMENT_DESC  = { 'squat': 'Squat', 'lunge': 'Lunge', 'deadlift': 'Deadlift', 'pullup': 'Pull-up', 'kipping': 'Kipping', 'press': 'Press', 'row': 'Row' };
 
 function movement() {
   const mvs = getMovementsForSite();
@@ -751,6 +752,17 @@ function route() {
     </button>`;
 }
 
+function coming_soon() {
+  const name = DATA ? DATA.name : '이 동작';
+  return `
+    <div style="text-align:center;padding:40px 0">
+      <div style="font-size:48px;margin-bottom:16px">🛠️</div>
+      <h1 class="t1">${name} 콘텐츠<br>준비 중입니다</h1>
+      <p class="t3" style="margin-top:12px;color:var(--text-sub)">현재 스쿼트 콘텐츠를 먼저 이용해 보세요.<br>런지·데드리프트는 곧 업데이트됩니다.</p>
+    </div>
+    <button class="btn-primary" onclick="go('movement')">다른 동작 선택</button>`;
+}
+
 function danger() {
   let title, reason, action;
   if (S.isRedFlagDanger) {
@@ -824,7 +836,7 @@ const BACK_MAP = {
   pain_site: 'home', red_flag: 'pain_site', movement: 'red_flag',
   question: 'movement', test: 'question',
   cause: null, // dynamic: test or question
-  route: 'cause', complete: 'route', danger: 'home'
+  route: 'cause', complete: 'route', danger: 'home', coming_soon: 'movement'
 };
 function goBack() {
   let dest = BACK_MAP[S.screen];
@@ -852,7 +864,10 @@ function selectPainSite(id) {
 async function selectMovement(id) {
   DATA = await fetch(`data/movements/${id}.json`).then(r => r.json());
   S.movementId   = id;
-  S.questionId   = getPainSite().entry_question;
+  if (DATA.coming_soon) { go('coming_soon'); return; }
+  const site = getPainSite();
+  if (site && site.coming_soon) { go('coming_soon'); return; }
+  S.questionId   = site.entry_question;
   S.questionDepth = 0;
   go('question');
 }

@@ -1,0 +1,43 @@
+{
+  "id": "lunge",
+  "name": "런지",
+  "coming_soon": true,
+  "pain_sites": [
+    {
+      "id": "knee",
+      "name": "무릎",
+      "coming_soon": true,
+      "entry_question": null,
+      "questions": [],
+      "tests": [],
+      "causes": []
+    },
+    {
+      "id": "lower-back",
+      "name": "허리",
+      "coming_soon": true,
+      "entry_question": null,
+      "questions": [],
+      "tests": [],
+      "causes": []
+    },
+    {
+      "id": "ankle",
+      "name": "발목",
+      "coming_soon": true,
+      "entry_question": null,
+      "questions": [],
+      "tests": [],
+      "causes": []
+    },
+    {
+      "id": "hip",
+      "name": "고관절",
+      "coming_soon": true,
+      "entry_question": null,
+      "questions": [],
+      "tests": [],
+      "causes": []
+    }
+  ]
+}

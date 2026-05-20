@@ -9,7 +9,17 @@ from ..auth import decode_token
 
 router = APIRouter(prefix="/records", tags=["records"])
 
+DEMO_EMAIL = "demo@rehab.com"
+
 def get_current_user(token: str, db: Session) -> User:
+    if token == "demo":
+        user = db.query(User).filter(User.email == DEMO_EMAIL).first()
+        if not user:
+            user = User(email=DEMO_EMAIL, hashed_password="demo", nickname="데모유저")
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        return user
     try:
         payload = decode_token(token)
         user = db.query(User).filter(User.id == int(payload["sub"])).first()
