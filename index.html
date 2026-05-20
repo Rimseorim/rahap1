@@ -633,18 +633,26 @@ function red_flag() {
       <span>${f.text}<span class="sub">${f.sub}</span></span>
     </button>`).join('');
 
+  const flagItems = flags.map(f => `
+    <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+      <span style="color:var(--danger);font-weight:700;flex-shrink:0">!</span>
+      <div>
+        <p style="margin:0;font-size:var(--t3);font-weight:600;color:var(--text)">${f.text}</p>
+        <p style="margin:2px 0 0;font-size:var(--t4);color:var(--text-sub)">${f.sub}</p>
+      </div>
+    </div>`).join('');
+
   return `
     <div>
-      <h1 class="t1">아래 증상이<br>있으신가요?</h1>
-      <p class="t3" style="margin-top:8px">해당되면 자가 재활 전에 병원을 먼저 방문해야 합니다.</p>
+      <h1 class="t1">먼저 확인하세요</h1>
+      <p class="t3" style="margin-top:8px">아래 증상 중 하나라도 해당되면 병원을 먼저 방문해야 합니다.</p>
+    </div>
+    <div class="card" style="padding:0 16px">
+      ${flagItems}
     </div>
     <div style="display:flex;gap:10px">
-      <button class="btn-primary" style="background:var(--danger);flex:1"
-        onclick="document.getElementById('flag-list').style.display='flex'">있어요</button>
-      <button class="btn-primary" style="flex:1" onclick="go('movement')">없어요</button>
-    </div>
-    <div id="flag-list" style="display:none;flex-direction:column;gap:6px">
-      ${flagList}
+      <button class="btn-primary" style="background:var(--danger);flex:1" onclick="triggerRedFlagDanger()">해당 있어요</button>
+      <button class="btn-primary" style="flex:1" onclick="go('movement')">해당 없어요</button>
     </div>`;
 }
 
