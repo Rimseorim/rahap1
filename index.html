@@ -523,46 +523,22 @@ function home() {
       </div>`;
   })() : '';
 
-  const quickSites = [
-    { id: 'knee',       name: '무릎',   icon: '🦵' },
-    { id: 'lower-back', name: '허리',   icon: '🔷' },
-    { id: 'shoulder',   name: '어깨',   icon: '💪' },
-    { id: 'ankle',      name: '발목',   icon: '🦶' },
-    { id: 'wrist',      name: '손목',   icon: '✋' },
-    { id: 'elbow',      name: '팔꿈치', icon: '●' },
-  ];
-  const quickBtns = quickSites.map(s => `
-    <button onclick="selectPainSite('${s.id}')"
-      style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 0;
-             background:var(--card);border:1.5px solid var(--border);border-radius:12px;
-             cursor:pointer;font-family:inherit;transition:all 0.15s;flex:1;min-width:0"
-      onmouseover="this.style.borderColor='var(--accent)';this.style.background='var(--choice-sel)'"
-      onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--card)'">
-      <span style="font-size:20px">${s.icon}</span>
-      <span style="font-size:var(--t4);font-weight:600;color:var(--text)">${s.name}</span>
-    </button>`).join('');
-
   return `
-    <div style="padding:8px 0 4px">
+    <div style="padding:8px 0 16px">
       <p style="margin:0 0 2px;font-size:var(--t3);color:var(--text-sub)">${greeting}</p>
-      <h1 style="font-size:28px;font-weight:800;color:var(--navy);margin:0">${USER.nickname}님</h1>
+      <h1 style="font-size:32px;font-weight:800;color:var(--navy);margin:0">${USER.nickname}님</h1>
     </div>
 
     ${lastCard}
 
-    <div>
-      <p style="margin:0 0 10px;font-size:var(--t3);font-weight:600;color:var(--text)">어디가 아픈가요?</p>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${quickBtns}</div>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
-      <button class="btn-primary" style="background:var(--navy-light);height:48px;font-size:var(--t3)" onclick="goMyRecords()">내 기록 보기</button>
-      <div style="display:flex;justify-content:center;gap:20px;padding:4px 0">
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+      <button class="btn-primary" style="padding:16px;font-size:var(--t2)" onclick="go('pain_site')">지금 시작하기</button>
+      <button class="btn-primary" style="background:var(--navy-light);padding:14px" onclick="goMyRecords()">내 기록 보기</button>
+      <div style="text-align:center;padding:4px 0">
         <a href="#" onclick="logout();return false;" style="font-size:var(--t4);color:var(--text-sub);text-decoration:none">로그아웃</a>
       </div>
-    </div>
-
-    <p style="text-align:center;font-size:12px;color:var(--border);line-height:1.6;margin-top:4px">이 앱은 재활 보조 도구이며 전문가 진단을 대체하지 않습니다</p>`;
+      <p style="text-align:center;font-size:var(--t4);color:var(--border);line-height:1.6;margin:0">이 앱은 재활 보조 도구이며<br>전문가 진단을 대체하지 않습니다</p>
+    </div>`;
 }
 
 function login() {
