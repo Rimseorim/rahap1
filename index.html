@@ -599,14 +599,10 @@ function signup() {
     <button class="btn-primary" style="background:transparent;color:var(--text-sub);border:1px solid var(--border)" onclick="go('login')">이미 계정이 있어요</button>`;
 }
 
-const PAIN_ICONS = {
-  knee: 'ti-bone', 'lower-back': 'ti-spine', ankle: 'ti-walk',
-  shoulder: 'ti-arm', wrist: 'ti-hand', elbow: 'ti-hand-finger',
-  hip: 'ti-circle-dot', chest: 'ti-heart'
-};
+const PAIN_ICONS = { knee: '🦵', 'lower-back': '🦴', ankle: '🦶', shoulder: '💪', wrist: '🤝', elbow: '🦾', hip: '🦯', chest: '🫀' };
 function painIcon(id) {
-  const cls = PAIN_ICONS[id];
-  return cls ? `<i class="ti ${cls}" style="font-size:22px;color:var(--navy)"></i>` : '●';
+  const icon = PAIN_ICONS[id];
+  return icon ? `<span style="font-size:20px">${icon}</span>` : '<span>●</span>';
 }
 
 function pain_site() {
@@ -647,15 +643,10 @@ function red_flag() {
 }
 
 
-const MOVEMENT_ICONS = {
-  'squat': 'ti-barbell', 'lunge': 'ti-run', 'deadlift': 'ti-weight',
-  'pullup': 'ti-arrow-bar-up', 'kipping': 'ti-wave-sine',
-  'press-vertical': 'ti-arrow-up-bar', 'press-horizontal': 'ti-arrow-right-bar',
-  'row': 'ti-arrow-left-bar'
-};
+const MOVEMENT_ICONS = { 'squat': '🏋️', 'lunge': '🦵', 'deadlift': '💪', 'pullup': '🙌', 'kipping': '🙌', 'press-vertical': '🏋️', 'press-horizontal': '🤸', 'row': '💪' };
 function movementIcon(id) {
-  const cls = MOVEMENT_ICONS[id];
-  return cls ? `<i class="ti ${cls}" style="font-size:22px;color:var(--navy)"></i>` : '🏋️';
+  const icon = MOVEMENT_ICONS[id];
+  return icon ? `<span style="font-size:20px">${icon}</span>` : '<span>🏋️</span>';
 }
 const MOVEMENT_DESC  = { 'squat': 'Squat', 'lunge': 'Lunge', 'deadlift': 'Deadlift', 'pullup': 'Pull-up', 'kipping': 'Kipping', 'press-vertical': 'Vertical Press', 'press-horizontal': 'Horizontal Press', 'row': 'Row' };
 
