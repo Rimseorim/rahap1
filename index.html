@@ -487,45 +487,82 @@ function landing() {
 }
 
 function home() {
-  const movementNames = { 'squat': '스쿼트', 'lunge': '런지', 'deadlift': '데드리프트' };
-  const painNames = { knee: '무릎', 'lower-back': '허리', ankle: '발목', shoulder: '어깨', wrist: '손목' };
+  const movementNames = {
+    'squat': '스쿼트', 'lunge': '런지', 'deadlift': '데드리프트',
+    'pullup': '풀업', 'kipping': '키핑', 'press': '프레스', 'row': '로우'
+  };
+  const painNames = {
+    knee: '무릎', 'lower-back': '허리', ankle: '발목',
+    shoulder: '어깨', wrist: '손목', elbow: '팔꿈치', hip: '고관절'
+  };
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? '좋은 아침이에요' : hour < 18 ? '안녕하세요' : hour < 22 ? '좋은 저녁이에요' : '늦은 시간까지 수고해요';
 
   const lastCard = LAST_RECORD ? (() => {
     const date = new Date(LAST_RECORD.updated_at).toLocaleDateString('ko-KR');
+    const mvName = movementNames[LAST_RECORD.movement_id] || LAST_RECORD.movement_id;
+    const siteName = painNames[LAST_RECORD.pain_site_id] || LAST_RECORD.pain_site_id;
+    const totalStages = 6;
+    const pct = Math.round(((LAST_RECORD.stage_index + 1) / totalStages) * 100);
     return `
-      <div class="card" style="display:flex;flex-direction:column;gap:10px;cursor:pointer"
+      <div class="card" style="cursor:pointer;border:1.5px solid var(--accent)"
            onclick="resumeRecord('${LAST_RECORD.movement_id}','${LAST_RECORD.pain_site_id}','${LAST_RECORD.cause_id}',${LAST_RECORD.stage_index})">
-        <p style="margin:0;font-size:var(--t4);color:var(--text-sub)">마지막 재활 기록</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:var(--t4);font-weight:600;color:var(--accent)">재활 진행 중</span>
+          <span style="font-size:var(--t4);color:var(--text-sub)">${date}</span>
+        </div>
+        <p style="margin:0 0 10px;font-weight:700;font-size:var(--t2)">${mvName} · ${siteName}</p>
+        <div style="height:4px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:8px">
+          <div style="height:100%;width:${pct}%;background:var(--accent);border-radius:99px;transition:width 0.3s"></div>
+        </div>
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <p style="margin:0;font-weight:700;font-size:var(--t3)">${movementNames[LAST_RECORD.movement_id] || LAST_RECORD.movement_id} · ${painNames[LAST_RECORD.pain_site_id] || LAST_RECORD.pain_site_id}</p>
-            <p style="margin:4px 0 0;font-size:var(--t4);color:var(--text-sub)">${date}</p>
-          </div>
-          <span style="font-size:var(--t3);color:var(--accent);font-weight:600">이어보기 →</span>
+          <span style="font-size:var(--t4);color:var(--text-sub)">${LAST_RECORD.stage_index + 1}단계 / ${totalStages}단계</span>
+          <span style="font-size:var(--t3);color:var(--accent);font-weight:600">이어하기 →</span>
         </div>
       </div>`;
-  })() : `
-    <div class="card" style="text-align:center;padding:24px;color:var(--text-sub)">
-      <p style="margin:0;font-size:var(--t3)">아직 기록이 없어요</p>
-      <p style="margin:6px 0 0;font-size:var(--t4)">첫 재활을 시작해보세요</p>
-    </div>`;
+  })() : '';
+
+  const quickSites = [
+    { id: 'knee',       name: '무릎',   icon: '🦵' },
+    { id: 'lower-back', name: '허리',   icon: '🔷' },
+    { id: 'shoulder',   name: '어깨',   icon: '💪' },
+    { id: 'ankle',      name: '발목',   icon: '🦶' },
+    { id: 'wrist',      name: '손목',   icon: '✋' },
+    { id: 'elbow',      name: '팔꿈치', icon: '●' },
+  ];
+  const quickBtns = quickSites.map(s => `
+    <button onclick="selectPainSite('${s.id}')"
+      style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 0;
+             background:var(--card);border:1.5px solid var(--border);border-radius:12px;
+             cursor:pointer;font-family:inherit;transition:all 0.15s;flex:1;min-width:0"
+      onmouseover="this.style.borderColor='var(--accent)';this.style.background='var(--choice-sel)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--card)'">
+      <span style="font-size:20px">${s.icon}</span>
+      <span style="font-size:var(--t4);font-weight:600;color:var(--text)">${s.name}</span>
+    </button>`).join('');
 
   return `
-    <div style="padding:8px 0 16px">
-      <p style="margin:0 0 2px;font-size:var(--t3);color:var(--text-sub)">안녕하세요</p>
-      <h1 style="font-size:32px;font-weight:800;color:var(--navy);margin:0">${USER.nickname}님</h1>
+    <div style="padding:8px 0 4px">
+      <p style="margin:0 0 2px;font-size:var(--t3);color:var(--text-sub)">${greeting}</p>
+      <h1 style="font-size:28px;font-weight:800;color:var(--navy);margin:0">${USER.nickname}님</h1>
     </div>
 
     ${lastCard}
 
-    <div style="display:flex;flex-direction:column;gap:10px;margin-top:32px">
-      <button class="btn-primary" style="padding:16px;font-size:var(--t2)" onclick="go('pain_site')">지금 시작하기</button>
-      <button class="btn-primary" style="background:var(--navy-light);padding:14px" onclick="goMyRecords()">내 기록 보기</button>
-      <div style="text-align:center;padding:4px 0">
+    <div>
+      <p style="margin:0 0 10px;font-size:var(--t3);font-weight:600;color:var(--text)">어디가 아픈가요?</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${quickBtns}</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+      <button class="btn-primary" style="background:var(--navy-light);height:48px;font-size:var(--t3)" onclick="goMyRecords()">내 기록 보기</button>
+      <div style="display:flex;justify-content:center;gap:20px;padding:4px 0">
         <a href="#" onclick="logout();return false;" style="font-size:var(--t4);color:var(--text-sub);text-decoration:none">로그아웃</a>
       </div>
-      <p style="text-align:center;font-size:var(--t4);color:var(--border);line-height:1.6;margin:0">이 앱은 재활 보조 도구이며<br>전문가 진단을 대체하지 않습니다</p>
-    </div>`;
+    </div>
+
+    <p style="text-align:center;font-size:12px;color:var(--border);line-height:1.6;margin-top:4px">이 앱은 재활 보조 도구이며 전문가 진단을 대체하지 않습니다</p>`;
 }
 
 function login() {
