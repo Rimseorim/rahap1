@@ -675,7 +675,7 @@ function movement() {
   const mvs = getMovementsForSite();
   const btns = mvs.map(m => `
     <button class="choice-btn" onclick="selectMovement('${m.id}')">
-      <span>${m.name}<span class="sub">${MOVEMENT_DESC[m.id] || ''}</span></span>
+      <span>${m.name}</span>
     </button>`).join('');
   return `
     ${contextBar()}
