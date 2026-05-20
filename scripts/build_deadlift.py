@@ -1,4 +1,6 @@
-{
+import json
+
+deadlift = {
   "id": "deadlift",
   "name": "데드리프트",
   "pain_sites": [
@@ -10,23 +12,11 @@
         {
           "id": "q1",
           "text": "통증이 언제 느껴지나요?",
-          "sub": null,
+          "sub": None,
           "choices": [
-            {
-              "id": "c1",
-              "text": "바닥에서 바를 들어 올릴 때",
-              "next": "q:q2"
-            },
-            {
-              "id": "c2",
-              "text": "바가 무릎을 지나갈 때",
-              "next": "q:q2"
-            },
-            {
-              "id": "c3",
-              "text": "쉬는 중에도 욱신거린다",
-              "next": "danger"
-            }
+            {"id": "c1", "text": "바닥에서 바를 들어 올릴 때", "next": "q:q2"},
+            {"id": "c2", "text": "바가 무릎을 지나갈 때", "next": "q:q2"},
+            {"id": "c3", "text": "쉬는 중에도 욱신거린다", "next": "danger"}
           ]
         },
         {
@@ -34,16 +24,8 @@
           "text": "무릎 어느 쪽이 아픈가요?",
           "sub": "손으로 짚어보면 더 정확합니다.",
           "choices": [
-            {
-              "id": "c1",
-              "text": "앞쪽 (슬개골 주변)",
-              "next": "test:test-valgus"
-            },
-            {
-              "id": "c2",
-              "text": "바깥쪽",
-              "next": "cause:cause-c"
-            }
+            {"id": "c1", "text": "앞쪽 (슬개골 주변)", "next": "test:test-valgus"},
+            {"id": "c2", "text": "바깥쪽", "next": "cause:cause-c"}
           ]
         }
       ],
@@ -80,9 +62,7 @@
           "route": {
             "stages": [
               {
-                "id": "stage-1",
-                "name": "활성화",
-                "duration": "1~2주",
+                "id": "stage-1", "name": "활성화", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "쿼드 세팅",
@@ -111,9 +91,7 @@
                 ]
               },
               {
-                "id": "stage-2",
-                "name": "맨몸",
-                "duration": "1~2주",
+                "id": "stage-2", "name": "맨몸", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "루마니안 데드리프트 (맨몸 힙 힌지)",
@@ -131,9 +109,7 @@
                 ]
               },
               {
-                "id": "stage-3",
-                "name": "PVC",
-                "duration": "1주",
+                "id": "stage-3", "name": "PVC", "duration": "1주",
                 "exercises": [
                   {
                     "name": "박스 데드리프트 (PVC 또는 빈 바)",
@@ -150,9 +126,7 @@
                 ]
               },
               {
-                "id": "stage-4",
-                "name": "경부하",
-                "duration": "1~2주",
+                "id": "stage-4", "name": "경부하", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "풀 데드리프트 (경부하)",
@@ -168,9 +142,7 @@
                 ]
               },
               {
-                "id": "stage-5",
-                "name": "볼륨",
-                "duration": "1~2주",
+                "id": "stage-5", "name": "볼륨", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "데드리프트 점진적 부하",
@@ -186,9 +158,7 @@
                 ]
               },
               {
-                "id": "stage-6",
-                "name": "복귀",
-                "duration": "지속",
+                "id": "stage-6", "name": "복귀", "duration": "지속",
                 "exercises": [
                   {
                     "name": "데드리프트 전 구간 복귀",
@@ -215,9 +185,7 @@
           "route": {
             "stages": [
               {
-                "id": "stage-1",
-                "name": "활성화",
-                "duration": "1~2주",
+                "id": "stage-1", "name": "활성화", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "클램쉘",
@@ -246,9 +214,7 @@
                 ]
               },
               {
-                "id": "stage-2",
-                "name": "맨몸",
-                "duration": "1~2주",
+                "id": "stage-2", "name": "맨몸", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "밴드 사이드 워크",
@@ -265,9 +231,7 @@
                 ]
               },
               {
-                "id": "stage-3",
-                "name": "PVC",
-                "duration": "1주",
+                "id": "stage-3", "name": "PVC", "duration": "1주",
                 "exercises": [
                   {
                     "name": "밴드 데드리프트 셋업 드릴",
@@ -284,9 +248,7 @@
                 ]
               },
               {
-                "id": "stage-4",
-                "name": "경부하",
-                "duration": "1~2주",
+                "id": "stage-4", "name": "경부하", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "데드리프트 (경부하, 무릎 정렬 집중)",
@@ -302,9 +264,7 @@
                 ]
               },
               {
-                "id": "stage-5",
-                "name": "볼륨",
-                "duration": "1~2주",
+                "id": "stage-5", "name": "볼륨", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "데드리프트 점진적 부하",
@@ -320,9 +280,7 @@
                 ]
               },
               {
-                "id": "stage-6",
-                "name": "복귀",
-                "duration": "지속",
+                "id": "stage-6", "name": "복귀", "duration": "지속",
                 "exercises": [
                   {
                     "name": "데드리프트 전 구간 복귀",
@@ -349,9 +307,7 @@
           "route": {
             "stages": [
               {
-                "id": "stage-1",
-                "name": "이완",
-                "duration": "1~2주",
+                "id": "stage-1", "name": "이완", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "폼롤러 IT밴드 이완",
@@ -380,9 +336,7 @@
                 ]
               },
               {
-                "id": "stage-2",
-                "name": "맨몸",
-                "duration": "1주",
+                "id": "stage-2", "name": "맨몸", "duration": "1주",
                 "exercises": [
                   {
                     "name": "90/90 힙 스트레칭",
@@ -399,9 +353,7 @@
                 ]
               },
               {
-                "id": "stage-3",
-                "name": "PVC",
-                "duration": "1주",
+                "id": "stage-3", "name": "PVC", "duration": "1주",
                 "exercises": [
                   {
                     "name": "클램쉘 + 힙 어브덕션",
@@ -417,9 +369,7 @@
                 ]
               },
               {
-                "id": "stage-4",
-                "name": "경부하",
-                "duration": "1~2주",
+                "id": "stage-4", "name": "경부하", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "루마니안 데드리프트 (경부하)",
@@ -435,9 +385,7 @@
                 ]
               },
               {
-                "id": "stage-5",
-                "name": "볼륨",
-                "duration": "1~2주",
+                "id": "stage-5", "name": "볼륨", "duration": "1~2주",
                 "exercises": [
                   {
                     "name": "풀 데드리프트 (경부하)",
@@ -453,9 +401,7 @@
                 ]
               },
               {
-                "id": "stage-6",
-                "name": "복귀",
-                "duration": "지속",
+                "id": "stage-6", "name": "복귀", "duration": "지속",
                 "exercises": [
                   {
                     "name": "데드리프트 전 구간 복귀",
@@ -475,31 +421,26 @@
       ]
     },
     {
-      "id": "lower-back",
-      "name": "허리",
-      "coming_soon": true,
-      "entry_question": null,
-      "questions": [],
-      "tests": [],
-      "causes": []
+      "id": "lower-back", "name": "허리", "coming_soon": True,
+      "entry_question": None, "questions": [], "tests": [], "causes": []
     },
     {
-      "id": "shoulder",
-      "name": "어깨",
-      "coming_soon": true,
-      "entry_question": null,
-      "questions": [],
-      "tests": [],
-      "causes": []
+      "id": "shoulder", "name": "어깨", "coming_soon": True,
+      "entry_question": None, "questions": [], "tests": [], "causes": []
     },
     {
-      "id": "wrist",
-      "name": "손목",
-      "coming_soon": true,
-      "entry_question": null,
-      "questions": [],
-      "tests": [],
-      "causes": []
+      "id": "wrist", "name": "손목", "coming_soon": True,
+      "entry_question": None, "questions": [], "tests": [], "causes": []
     }
   ]
 }
+
+with open("data/movements/deadlift.json", "w", encoding="utf-8") as f:
+    json.dump(deadlift, f, ensure_ascii=False, indent=2)
+
+with open("data/movements/deadlift.json", encoding="utf-8") as f:
+    check = json.load(f)
+knee = next(s for s in check["pain_sites"] if s["id"] == "knee")
+print("causes:", len(knee["causes"]))
+print("stages per cause:", [len(c["route"]["stages"]) for c in knee["causes"]])
+print("tests:", [t["id"] for t in knee["tests"]])
