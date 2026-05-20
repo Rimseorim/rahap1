@@ -3,21 +3,48 @@
     "id": "squat",
     "name": "스쿼트",
     "pain_sites": [
-      { "id": "knee", "name": "무릎" },
-      { "id": "lower-back", "name": "허리" },
-      { "id": "ankle", "name": "발목" },
-      { "id": "shoulder", "name": "어깨" }
+      {
+        "id": "knee",
+        "name": "무릎"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "ankle",
+        "name": "발목"
+      },
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      },
+      {
+        "id": "hip",
+        "name": "고관절"
+      }
     ]
   },
   {
     "id": "lunge",
     "name": "런지",
-    "coming_soon": true,
     "pain_sites": [
-      { "id": "knee", "name": "무릎" },
-      { "id": "lower-back", "name": "허리" },
-      { "id": "ankle", "name": "발목" },
-      { "id": "hip", "name": "고관절" }
+      {
+        "id": "knee",
+        "name": "무릎"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "ankle",
+        "name": "발목"
+      },
+      {
+        "id": "hip",
+        "name": "고관절"
+      }
     ]
   },
   {
@@ -25,10 +52,26 @@
     "name": "데드리프트",
     "coming_soon": true,
     "pain_sites": [
-      { "id": "lower-back", "name": "허리" },
-      { "id": "knee", "name": "무릎" },
-      { "id": "shoulder", "name": "어깨" },
-      { "id": "wrist", "name": "손목" }
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "knee",
+        "name": "무릎"
+      },
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      },
+      {
+        "id": "wrist",
+        "name": "손목"
+      },
+      {
+        "id": "hip",
+        "name": "고관절"
+      }
     ]
   },
   {
@@ -36,10 +79,22 @@
     "name": "풀업",
     "coming_soon": true,
     "pain_sites": [
-      { "id": "shoulder", "name": "어깨" },
-      { "id": "elbow", "name": "팔꿈치" },
-      { "id": "wrist", "name": "손목" },
-      { "id": "lower-back", "name": "허리" }
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      },
+      {
+        "id": "elbow",
+        "name": "팔꿈치"
+      },
+      {
+        "id": "wrist",
+        "name": "손목"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      }
     ]
   },
   {
@@ -47,10 +102,22 @@
     "name": "키핑",
     "coming_soon": true,
     "pain_sites": [
-      { "id": "shoulder", "name": "어깨" },
-      { "id": "wrist", "name": "손목" },
-      { "id": "lower-back", "name": "허리" },
-      { "id": "elbow", "name": "팔꿈치" }
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      },
+      {
+        "id": "wrist",
+        "name": "손목"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "elbow",
+        "name": "팔꿈치"
+      }
     ]
   },
   {
@@ -58,10 +125,22 @@
     "name": "프레스",
     "coming_soon": true,
     "pain_sites": [
-      { "id": "shoulder", "name": "어깨" },
-      { "id": "wrist", "name": "손목" },
-      { "id": "lower-back", "name": "허리" },
-      { "id": "elbow", "name": "팔꿈치" }
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      },
+      {
+        "id": "wrist",
+        "name": "손목"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "elbow",
+        "name": "팔꿈치"
+      }
     ]
   },
   {
@@ -69,10 +148,22 @@
     "name": "로우",
     "coming_soon": true,
     "pain_sites": [
-      { "id": "lower-back", "name": "허리" },
-      { "id": "shoulder", "name": "어깨" },
-      { "id": "wrist", "name": "손목" },
-      { "id": "elbow", "name": "팔꿈치" }
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      },
+      {
+        "id": "wrist",
+        "name": "손목"
+      },
+      {
+        "id": "elbow",
+        "name": "팔꿈치"
+      }
     ]
   }
 ]

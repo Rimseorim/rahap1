@@ -500,6 +500,15 @@
       "questions": [],
       "tests": [],
       "causes": []
+    },
+    {
+      "id": "hip",
+      "name": "고관절",
+      "coming_soon": true,
+      "entry_question": null,
+      "questions": [],
+      "tests": [],
+      "causes": []
     }
   ]
 }
