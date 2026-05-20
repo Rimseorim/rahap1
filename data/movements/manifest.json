@@ -121,29 +121,6 @@
     ]
   },
   {
-    "id": "press",
-    "name": "프레스",
-    "coming_soon": true,
-    "pain_sites": [
-      {
-        "id": "shoulder",
-        "name": "어깨"
-      },
-      {
-        "id": "wrist",
-        "name": "손목"
-      },
-      {
-        "id": "lower-back",
-        "name": "허리"
-      },
-      {
-        "id": "elbow",
-        "name": "팔꿈치"
-      }
-    ]
-  },
-  {
     "id": "row",
     "name": "로우",
     "coming_soon": true,
@@ -163,6 +140,54 @@
       {
         "id": "elbow",
         "name": "팔꿈치"
+      }
+    ]
+  },
+  {
+    "id": "press-vertical",
+    "name": "수직 프레스",
+    "pain_sites": [
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      },
+      {
+        "id": "elbow",
+        "name": "팔꿈치"
+      },
+      {
+        "id": "wrist",
+        "name": "손목"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      }
+    ]
+  },
+  {
+    "id": "press-horizontal",
+    "name": "수평 프레스",
+    "pain_sites": [
+      {
+        "id": "shoulder",
+        "name": "어깨"
+      },
+      {
+        "id": "elbow",
+        "name": "팔꿈치"
+      },
+      {
+        "id": "wrist",
+        "name": "손목"
+      },
+      {
+        "id": "lower-back",
+        "name": "허리"
+      },
+      {
+        "id": "chest",
+        "name": "흉근"
       }
     ]
   }

@@ -1,6 +1,6 @@
 {
-  "id": "press",
-  "name": "프레스",
+  "id": "press-vertical",
+  "name": "수직 프레스",
   "pain_sites": [
     {
       "id": "shoulder",

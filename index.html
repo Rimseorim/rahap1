@@ -489,7 +489,7 @@ function landing() {
 function home() {
   const movementNames = {
     'squat': '스쿼트', 'lunge': '런지', 'deadlift': '데드리프트',
-    'pullup': '풀업', 'kipping': '키핑', 'press': '프레스', 'row': '로우'
+    'pullup': '풀업', 'kipping': '키핑', 'press-vertical': '수직 프레스', 'press-horizontal': '수평 프레스', 'row': '로우'
   };
   const painNames = {
     knee: '무릎', 'lower-back': '허리', ankle: '발목',
@@ -591,7 +591,7 @@ function signup() {
     <button class="btn-primary" style="background:transparent;color:var(--text-sub);border:1px solid var(--border)" onclick="go('login')">이미 계정이 있어요</button>`;
 }
 
-const PAIN_ICONS = { knee: '🦵', 'lower-back': '🦴', ankle: '🦶', shoulder: '💪', wrist: '🤝' };
+const PAIN_ICONS = { knee: '🦵', 'lower-back': '🦴', ankle: '🦶', shoulder: '💪', wrist: '🤝', elbow: '🦾', hip: '🦯', chest: '🫀' };
 
 function pain_site() {
   const sites = getAllPainSites();
@@ -631,8 +631,8 @@ function red_flag() {
 }
 
 
-const MOVEMENT_ICONS = { 'squat': '🏋️', 'lunge': '🦵', 'deadlift': '💪', 'pullup': '🙌', 'kipping': '🙌', 'press': '🏋️', 'row': '💪' };
-const MOVEMENT_DESC  = { 'squat': 'Squat', 'lunge': 'Lunge', 'deadlift': 'Deadlift', 'pullup': 'Pull-up', 'kipping': 'Kipping', 'press': 'Press', 'row': 'Row' };
+const MOVEMENT_ICONS = { 'squat': '🏋️', 'lunge': '🦵', 'deadlift': '💪', 'pullup': '🙌', 'kipping': '🙌', 'press-vertical': '🏋️', 'press-horizontal': '🤸', 'row': '💪' };
+const MOVEMENT_DESC  = { 'squat': 'Squat', 'lunge': 'Lunge', 'deadlift': 'Deadlift', 'pullup': 'Pull-up', 'kipping': 'Kipping', 'press-vertical': 'Vertical Press', 'press-horizontal': 'Horizontal Press', 'row': 'Row' };
 
 function movement() {
   const mvs = getMovementsForSite();
