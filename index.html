@@ -599,13 +599,21 @@ function signup() {
     <button class="btn-primary" style="background:transparent;color:var(--text-sub);border:1px solid var(--border)" onclick="go('login')">이미 계정이 있어요</button>`;
 }
 
-const PAIN_ICONS = { knee: '🦵', 'lower-back': '🦴', ankle: '🦶', shoulder: '💪', wrist: '🤝', elbow: '🦾', hip: '🦯', chest: '🫀' };
+const PAIN_ICONS = {
+  knee: 'ti-bone', 'lower-back': 'ti-spine', ankle: 'ti-walk',
+  shoulder: 'ti-arm', wrist: 'ti-hand', elbow: 'ti-hand-finger',
+  hip: 'ti-circle-dot', chest: 'ti-heart'
+};
+function painIcon(id) {
+  const cls = PAIN_ICONS[id];
+  return cls ? `<i class="ti ${cls}" style="font-size:22px;color:var(--navy)"></i>` : '●';
+}
 
 function pain_site() {
   const sites = getAllPainSites();
   const btns = sites.map(p => `
     <button class="choice-btn" onclick="selectPainSite('${p.id}')">
-      <span style="font-size:20px">${PAIN_ICONS[p.id] || '●'}</span>
+      ${painIcon(p.id)}
       <span>${p.name}</span>
     </button>`).join('');
   return `
@@ -639,7 +647,16 @@ function red_flag() {
 }
 
 
-const MOVEMENT_ICONS = { 'squat': '🏋️', 'lunge': '🦵', 'deadlift': '💪', 'pullup': '🙌', 'kipping': '🙌', 'press-vertical': '🏋️', 'press-horizontal': '🤸', 'row': '💪' };
+const MOVEMENT_ICONS = {
+  'squat': 'ti-barbell', 'lunge': 'ti-run', 'deadlift': 'ti-weight',
+  'pullup': 'ti-arrow-bar-up', 'kipping': 'ti-wave-sine',
+  'press-vertical': 'ti-arrow-up-bar', 'press-horizontal': 'ti-arrow-right-bar',
+  'row': 'ti-arrow-left-bar'
+};
+function movementIcon(id) {
+  const cls = MOVEMENT_ICONS[id];
+  return cls ? `<i class="ti ${cls}" style="font-size:22px;color:var(--navy)"></i>` : '🏋️';
+}
 const MOVEMENT_DESC  = { 'squat': 'Squat', 'lunge': 'Lunge', 'deadlift': 'Deadlift', 'pullup': 'Pull-up', 'kipping': 'Kipping', 'press-vertical': 'Vertical Press', 'press-horizontal': 'Horizontal Press', 'row': 'Row' };
 
 const ALL_MOVEMENT_NAMES = {
@@ -668,7 +685,7 @@ function movement() {
   const mvs = getMovementsForSite();
   const btns = mvs.map(m => `
     <button class="choice-btn" onclick="selectMovement('${m.id}')">
-      <span style="font-size:20px">${MOVEMENT_ICONS[m.id] || '🏋️'}</span>
+      ${movementIcon(m.id)}
       <span>${m.name}<span class="sub">${MOVEMENT_DESC[m.id] || ''}</span></span>
     </button>`).join('');
   return `
