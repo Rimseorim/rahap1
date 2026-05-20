@@ -609,7 +609,6 @@ function pain_site() {
   const sites = getAllPainSites();
   const btns = sites.map(p => `
     <button class="choice-btn" onclick="selectPainSite('${p.id}')">
-      ${painIcon(p.id)}
       <span>${p.name}</span>
     </button>`).join('');
   return `
@@ -676,7 +675,6 @@ function movement() {
   const mvs = getMovementsForSite();
   const btns = mvs.map(m => `
     <button class="choice-btn" onclick="selectMovement('${m.id}')">
-      ${movementIcon(m.id)}
       <span>${m.name}<span class="sub">${MOVEMENT_DESC[m.id] || ''}</span></span>
     </button>`).join('');
   return `
