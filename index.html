@@ -634,6 +634,28 @@ function red_flag() {
 const MOVEMENT_ICONS = { 'squat': '🏋️', 'lunge': '🦵', 'deadlift': '💪', 'pullup': '🙌', 'kipping': '🙌', 'press-vertical': '🏋️', 'press-horizontal': '🤸', 'row': '💪' };
 const MOVEMENT_DESC  = { 'squat': 'Squat', 'lunge': 'Lunge', 'deadlift': 'Deadlift', 'pullup': 'Pull-up', 'kipping': 'Kipping', 'press-vertical': 'Vertical Press', 'press-horizontal': 'Horizontal Press', 'row': 'Row' };
 
+const ALL_MOVEMENT_NAMES = {
+  'squat': '스쿼트', 'lunge': '런지', 'deadlift': '데드리프트',
+  'pullup': '풀업', 'kipping': '키핑', 'press-vertical': '수직 프레스',
+  'press-horizontal': '수평 프레스', 'row': '로우'
+};
+const ALL_PAIN_NAMES = {
+  knee: '무릎', 'lower-back': '허리', ankle: '발목',
+  shoulder: '어깨', wrist: '손목', elbow: '팔꿈치', hip: '고관절', chest: '흉근'
+};
+
+function contextBar() {
+  const chips = [];
+  if (S.painSiteId)  chips.push(ALL_PAIN_NAMES[S.painSiteId]  || S.painSiteId);
+  if (S.movementId)  chips.push(ALL_MOVEMENT_NAMES[S.movementId] || S.movementId);
+  if (!chips.length) return '';
+  const items = chips.map(c =>
+    `<span style="background:var(--choice-sel);color:var(--navy);border-radius:99px;
+      padding:4px 10px;font-size:var(--t4);font-weight:600;white-space:nowrap">${c}</span>`
+  ).join('<span style="color:var(--border);font-size:var(--t4)">›</span>');
+  return `<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">${items}</div>`;
+}
+
 function movement() {
   const mvs = getMovementsForSite();
   const btns = mvs.map(m => `
@@ -642,6 +664,7 @@ function movement() {
       <span>${m.name}<span class="sub">${MOVEMENT_DESC[m.id] || ''}</span></span>
     </button>`).join('');
   return `
+    ${contextBar()}
     <div>
       <h1 class="t1">어떤 동작에서<br>통증이 나타나나요?</h1>
     </div>
@@ -655,6 +678,7 @@ function question() {
       ${c.text}
     </button>`).join('');
   return `
+    ${contextBar()}
     <div>
       <h1 class="t1">${q.text}</h1>
       ${q.sub ? `<p class="t3" style="margin-top:8px">${q.sub}</p>` : ''}
@@ -671,6 +695,7 @@ function test() {
     </div>`).join('');
 
   return `
+    ${contextBar()}
     <div>
       <div style="display:inline-block;background:var(--navy);color:white;border-radius:99px;padding:4px 12px;font-size:var(--t4);font-weight:600;margin-bottom:12px">챕터2 · 직접 테스트</div>
       <h1 class="t1">${t.name}</h1>
@@ -697,6 +722,7 @@ function test() {
 function cause() {
   const c = getCause();
   return `
+    ${contextBar()}
     <div>
       <h1 class="t1">원인을 찾았습니다</h1>
     </div>
@@ -747,6 +773,7 @@ function route() {
   }).join('');
 
   return `
+    ${contextBar()}
     <div>
       <h1 class="t1">${c.label} · ${mv.name} ${ps.name}</h1>
       <p class="t3" style="margin-top:6px">${c.name}</p>
