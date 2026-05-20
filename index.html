@@ -151,6 +151,10 @@
 
     /* Scroll top on nav */
     html { scroll-behavior: smooth; }
+
+    /* 아코디언 화살표 회전 */
+    details .how-chevron { transition: transform 0.2s ease; }
+    details[open] .how-chevron { transform: rotate(180deg); }
   </style>
 </head>
 <body>
@@ -770,7 +774,7 @@ function route() {
         <summary style="list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
           border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
           <span style="font-size:var(--t4);font-weight:600;color:var(--text-sub)">방법</span>
-          <i class="ti ti-chevron-down" style="font-size:14px;color:var(--text-sub)"></i>
+          <i class="ti ti-chevron-down how-chevron" style="font-size:14px;color:var(--text-sub)"></i>
         </summary>
         <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
           ${howSteps}
