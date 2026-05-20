@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CrossFit Rehab Guide</title>
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
   <style>
     :root {
       --navy:       #2C2C2C;
@@ -462,23 +463,20 @@ function landing() {
       <p style="font-size:var(--t3);opacity:0.75;margin:0;line-height:1.6">같은 무릎 통증도 원인이 다르면<br>재활도 달라야 합니다.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-      <div class="card" style="display:flex;flex-direction:column;gap:8px;padding:20px">
-        <span style="font-weight:700;font-size:var(--t2)">운동하다 다쳤어요</span>
-        <span style="font-size:var(--t4);color:var(--text-sub);line-height:1.5">갑자기 통증이 생겼어요</span>
-      </div>
-      <div class="card" style="display:flex;flex-direction:column;gap:8px;padding:20px">
-        <span style="font-weight:700;font-size:var(--t2)">재활이 막막해요</span>
-        <span style="font-size:var(--t4);color:var(--text-sub);line-height:1.5">뭘 해야 할지 모르겠어요</span>
-      </div>
-      <div class="card" style="display:flex;flex-direction:column;gap:8px;padding:20px">
-        <span style="font-weight:700;font-size:var(--t2)">원인부터 찾아줘요</span>
-        <span style="font-size:var(--t4);color:var(--text-sub);line-height:1.5">동작과 부위로 원인을 짚어줘요</span>
-      </div>
-      <div class="card" style="display:flex;flex-direction:column;gap:8px;padding:20px">
-        <span style="font-weight:700;font-size:var(--t2)">재활 루틴 바로 나와요</span>
-        <span style="font-size:var(--t4);color:var(--text-sub);line-height:1.5">원인에 맞는 루틴이 바로 나와요</span>
-      </div>
+    <div style="display:flex;flex-direction:column">
+      ${[
+        ['ti-bandage',      '운동하다 다쳤어요',        '어떤 동작에서 어디가 아픈지 알려주세요'],
+        ['ti-help-circle',  '재활이 막막해요',          '뭘 해야 할지 모를 때 원인부터 찾아드려요'],
+        ['ti-list-details', '재활 루틴 바로 받고 싶어요', '원인에 맞는 재활 루틴이 바로 나와요'],
+      ].map(([icon, title, desc], i, arr) => `
+        <div style="display:flex;align-items:center;gap:16px;padding:18px 0;
+          ${i < arr.length - 1 ? 'border-bottom:1px solid var(--border)' : ''}">
+          <i class="ti ${icon}" style="font-size:24px;color:var(--navy);flex-shrink:0;width:28px;text-align:center"></i>
+          <div>
+            <p style="margin:0;font-size:var(--t2);font-weight:700;color:var(--text)">${title}</p>
+            <p style="margin:4px 0 0;font-size:var(--t4);color:var(--text-sub);line-height:1.5">${desc}</p>
+          </div>
+        </div>`).join('')}
     </div>
 
     <button class="btn-primary" style="font-size:var(--t2);padding:16px" onclick="go('login')">시작하기</button>
