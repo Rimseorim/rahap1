@@ -756,7 +756,7 @@ function route() {
       : `<div class="stage-item ${cls}">${i + 1} ${st.name}</div>`;
   }).join('');
 
-  const exercises = stage.exercises.map(ex => {
+  const exercises = stage.exercises.map((ex, exIdx) => {
     const howSteps = (ex.how || []).map((s, i) => `
       <div style="display:flex;gap:10px;align-items:flex-start;margin-top:4px">
         <span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span>
@@ -766,7 +766,7 @@ function route() {
     <div class="exercise-card">
       <h3>${ex.name}</h3>
       <span class="sets-text">${ex.sets}</span>
-      <details style="margin-top:8px" open>
+      <details style="margin-top:8px" ${exIdx === 0 ? 'open' : ''}>
         <summary style="list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
           border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
           <span style="font-size:var(--t4);font-weight:600;color:var(--text-sub)">방법</span>
