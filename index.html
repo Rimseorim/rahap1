@@ -263,7 +263,13 @@ async function doSignup(e) {
 }
 
 function logout() { clearUser(); render(); }
-function naverLogin() { window.location.href = `${API}/auth/naver/login`; }
+function naverLogin() {
+  const w = 500, h = 600;
+  const left = window.screenX + (window.outerWidth - w) / 2;
+  const top  = window.screenY + (window.outerHeight - h) / 2;
+  window.open(`${API}/auth/naver/login`, 'naver_login',
+    `width=${w},height=${h},left=${left},top=${top},resizable=yes`);
+}
 
 let MY_RECORDS = null;
 
@@ -354,16 +360,34 @@ let MANIFEST = null;
 let LAST_RECORD = null;
 
 async function init() {
-  // 네이버 OAuth 콜백 처리
+  // 네이버 OAuth 콜백 처리 (팝업 자식 창인 경우)
   const params = new URLSearchParams(location.search);
   const isOAuthReturn = !!params.get('naver_token');
   if (isOAuthReturn) {
+    if (window.opener) {
+      window.opener.postMessage({
+        type: 'naver_login',
+        token: params.get('naver_token'),
+        nickname: params.get('naver_nickname') || '사용자'
+      }, '*');
+      window.close();
+      return;
+    }
     saveUser({ token: params.get('naver_token'), nickname: params.get('naver_nickname') || '사용자' });
     history.replaceState({}, '', location.pathname);
     S.screen = 'home';
   } else if (params.get('error')) {
     history.replaceState({}, '', location.pathname);
   }
+
+  // 팝업에서 전달된 토큰 수신
+  window.addEventListener('message', (e) => {
+    if (e.data?.type === 'naver_login') {
+      saveUser({ token: e.data.token, nickname: e.data.nickname });
+      render();
+      go('home');
+    }
+  });
 
   MANIFEST = await fetch('data/movements/manifest.json').then(r => r.json());
   if (USER) {
