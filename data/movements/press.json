@@ -1,7 +1,6 @@
 {
   "id": "press",
   "name": "프레스",
-  "coming_soon": true,
   "pain_sites": [
     {
       "id": "shoulder",
