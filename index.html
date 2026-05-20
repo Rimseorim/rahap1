@@ -766,9 +766,15 @@ function route() {
     <div class="exercise-card">
       <h3>${ex.name}</h3>
       <span class="sets-text">${ex.sets}</span>
-      <span class="why-label" style="margin-top:4px">어떻게</span>
-      ${howSteps}
-      ${ex.cue ? `<div class="cue-text" style="margin-top:4px">● ${ex.cue}</div>` : ''}
+      <details style="margin-top:8px" open>
+        <summary style="font-size:var(--t4);font-weight:600;color:var(--navy);cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px">
+          <span id="how-arrow" style="font-size:10px">▾</span> 방법
+        </summary>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+          ${howSteps}
+        </div>
+        ${ex.cue ? `<div class="cue-text" style="margin-top:8px">● ${ex.cue}</div>` : ''}
+      </details>
       <details style="margin-top:6px">
         <summary style="font-size:var(--t4);color:var(--text-sub);cursor:pointer;list-style:none">▸ 왜 이 운동인가</summary>
         <p class="why-text" style="margin-top:6px">${ex.why}</p>
