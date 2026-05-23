@@ -42,7 +42,15 @@
       "PowerShell(Get-NetTCPConnection *)",
       "PowerShell($r = [System.Net.HttpWebRequest]::Create\\(\"http://127.0.0.1:8000/auth/naver/login\"\\); $r.AllowAutoRedirect = $false; $r.Timeout = 5000; try { $resp = $r.GetResponse\\(\\); \"$\\($resp.StatusCode\\) -> $\\($resp.Headers['Location']\\)\" } catch [System.Net.WebException] { \"$\\($_.Exception.Response.StatusCode\\): $\\($_.Exception.Message\\)\" })",
       "Bash(pip freeze *)",
-      "Bash(pip show *)"
+      "Bash(pip show *)",
+      "Bash(powershell *)",
+      "Bash(del data\\\\movements\\\\back-squat.json)",
+      "Bash(npx playwright *)",
+      "Bash(cd /tmp)",
+      "Bash(npm list *)",
+      "Bash(Start-Sleep 2)",
+      "Bash(Select-String \"title|body\")",
+      "Bash(Select-Object -First 5)"
     ]
   }
 }
