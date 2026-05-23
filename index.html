@@ -760,33 +760,57 @@ function route() {
       : `<div class="stage-item ${cls}">${i + 1} ${st.name}</div>`;
   }).join('');
 
-  const exercises = stage.exercises.map((ex, exIdx) => {
-    const howSteps = (ex.how || []).map((s, i) => `
-      <div style="display:flex;gap:10px;align-items:flex-start;margin-top:4px">
-        <span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span>
-        <span style="font-size:var(--t4);line-height:1.6;color:var(--text)">${s}</span>
+  let stageContent;
+  if (stage.type === 'reassessment') {
+    const items = (stage.checklist || []).map(item => `
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="color:var(--accent);font-size:18px">✓</span>
+        <span style="font-size:var(--t3)">${item}</span>
       </div>`).join('');
-    return `
-    <div class="exercise-card">
-      <h3>${ex.name}</h3>
-      <span class="sets-text">${ex.sets}</span>
-      <details style="margin-top:8px" ${exIdx === 0 ? 'open' : ''}>
-        <summary style="list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
-          border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
-          <span style="font-size:var(--t4);font-weight:600;color:var(--text-sub)">방법</span>
-          <i class="ti ti-chevron-down how-chevron" style="font-size:14px;color:var(--text-sub)"></i>
-        </summary>
-        <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
-          ${howSteps}
-        </div>
-        ${ex.cue ? `<div class="cue-text" style="margin-top:8px">● ${ex.cue}</div>` : ''}
-      </details>
-      <details style="margin-top:6px">
-        <summary style="font-size:var(--t4);color:var(--text-sub);cursor:pointer;list-style:none">▸ 왜 이 운동인가</summary>
-        <p class="why-text" style="margin-top:6px">${ex.why}</p>
-      </details>
+    stageContent = `
+    <div class="card">
+      <p style="font-size:var(--t3);font-weight:600;margin-bottom:12px">다음 3가지를 모두 확인하세요</p>
+      ${items}
+      <div style="margin-top:12px;padding:10px;background:var(--bg-sub);border-radius:8px">
+        <p style="margin:0;font-size:var(--t4);color:var(--accent)">✓ ${stage.pass_note}</p>
+        <p style="margin:4px 0 0;font-size:var(--t4);color:var(--danger)">✗ ${stage.fail_note}</p>
+      </div>
     </div>`;
-  }).join('');
+  } else if (stage.type === 'tips') {
+    stageContent = (stage.tips || []).map(tip => `
+    <div class="card" style="display:flex;flex-direction:column;gap:6px">
+      <p style="margin:0;font-size:var(--t3);font-weight:600">${tip.title}</p>
+      <p style="margin:0;font-size:var(--t4);color:var(--text-sub);line-height:1.6">${tip.body}</p>
+    </div>`).join('');
+  } else {
+    stageContent = (stage.exercises || []).map((ex, exIdx) => {
+      const howSteps = (ex.how || []).map((s, i) => `
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-top:4px">
+          <span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span>
+          <span style="font-size:var(--t4);line-height:1.6;color:var(--text)">${s}</span>
+        </div>`).join('');
+      return `
+      <div class="exercise-card">
+        <h3>${ex.name}</h3>
+        <span class="sets-text">${ex.sets}</span>
+        <details style="margin-top:8px" ${exIdx === 0 ? 'open' : ''}>
+          <summary style="list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+            border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+            <span style="font-size:var(--t4);font-weight:600;color:var(--text-sub)">방법</span>
+            <i class="ti ti-chevron-down how-chevron" style="font-size:14px;color:var(--text-sub)"></i>
+          </summary>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+            ${howSteps}
+          </div>
+          ${ex.cue ? `<div class="cue-text" style="margin-top:8px">● ${ex.cue}</div>` : ''}
+        </details>
+        <details style="margin-top:6px">
+          <summary style="font-size:var(--t4);color:var(--text-sub);cursor:pointer;list-style:none">▸ 왜 이 운동인가</summary>
+          <p class="why-text" style="margin-top:6px">${ex.why}</p>
+        </details>
+      </div>`;
+    }).join('');
+  }
 
   return `
     ${contextBar()}
@@ -802,7 +826,7 @@ function route() {
       <span style="font-size:var(--t2);font-weight:var(--w2)">${stage.name} 단계</span>
       ${stage.duration ? `<span style="font-size:var(--t4);color:var(--text-sub);background:var(--border);border-radius:99px;padding:2px 10px">약 ${stage.duration}</span>` : ''}
     </div>
-    ${exercises}
+    ${stageContent}
     <button class="btn-primary" onclick="${isLast ? "go('complete')" : 'nextStage()'}">
       ${isLast ? '루트 완료' : '이 단계 완료'}
     </button>`;
