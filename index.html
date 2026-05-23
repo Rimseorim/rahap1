@@ -415,11 +415,11 @@ function getMovementsForSite() {
 
 /* ── 진행률 ── */
 const PROGRESS = {
-  home: 0, pain_site: 10, red_flag: 20, movement: 30,
+  home: 0, pain_site: 10, movement: 30,
   question: 55, test: 70, cause: 82, route: 92, complete: 100, danger: 50, coming_soon: 35
 };
 const LABEL = {
-  pain_site: '통증 부위', red_flag: '위험 신호 확인', movement: '동작 선택',
+  pain_site: '통증 부위', movement: '동작 선택',
   question: '챕터1 · 감별 질문', test: '챕터2 · 직접 테스트',
   cause: '원인 확정', route: '재활 루트', complete: '완료', danger: '주의'
 };
@@ -452,7 +452,7 @@ function render() {
   }
   updateProgress(S.screen);
   window.scrollTo(0, 0);
-  const screens = { landing, home, login, signup, my_records, pain_site, red_flag, movement, question, test, cause, route, danger, complete, coming_soon };
+  const screens = { landing, home, login, signup, my_records, pain_site, movement, question, test, cause, route, danger, complete, coming_soon };
   el('main-screen').innerHTML = (screens[S.screen] || landing)();
 }
 
@@ -619,43 +619,6 @@ function pain_site() {
     <div class="choices">${btns}</div>`;
 }
 
-function red_flag() {
-  const flags = [
-    { text: '관절이 눈에 띄게 부어있어요', sub: '운동 후뿐 아니라 지금도 부어있는 경우' },
-    { text: '만지면 열감이 느껴져요', sub: '다른 쪽 관절과 비교했을 때 확실히 따뜻함' },
-    { text: '자다가 통증에 깬 적 있어요', sub: '야간 통증 · 안정 시에도 지속되는 통증' },
-    { text: '관절이 걸리거나 갑자기 힘이 빠져요', sub: '잠김(locking) · 순간 탈력(giving way)' },
-    { text: '최근 넘어지거나 강하게 부딪혔어요', sub: '낙상 · 충돌 · 외상 후 통증' },
-  ];
-  const flagList = flags.map(f => `
-    <button class="choice-btn" style="border-color:var(--danger);color:var(--danger)" onclick="triggerRedFlagDanger()">
-      <span style="color:var(--danger);font-weight:700;font-size:18px">!</span>
-      <span>${f.text}<span class="sub">${f.sub}</span></span>
-    </button>`).join('');
-
-  const flagItems = flags.map(f => `
-    <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
-      <span style="color:var(--danger);font-weight:700;flex-shrink:0">!</span>
-      <div>
-        <p style="margin:0;font-size:var(--t3);font-weight:600;color:var(--text)">${f.text}</p>
-        <p style="margin:2px 0 0;font-size:var(--t4);color:var(--text-sub)">${f.sub}</p>
-      </div>
-    </div>`).join('');
-
-  return `
-    <div>
-      <h1 class="t1">먼저 확인하세요</h1>
-      <p class="t3" style="margin-top:8px">아래 증상 중 하나라도 해당되면 병원을 먼저 방문해야 합니다.</p>
-    </div>
-    <div class="card" style="padding:0 16px">
-      ${flagItems}
-    </div>
-    <div style="display:flex;gap:10px">
-      <button class="btn-primary" style="background:var(--danger);flex:1" onclick="triggerRedFlagDanger()">해당 있어요</button>
-      <button class="btn-primary" style="flex:1" onclick="go('movement')">해당 없어요</button>
-    </div>`;
-}
-
 
 const MOVEMENT_ICONS = { 'squat': '🏋️', 'lunge': '🦵', 'deadlift': '💪', 'pullup': '🙌', 'kipping': '🙌', 'press-vertical': '🏋️', 'press-horizontal': '🤸', 'row': '💪' };
 function movementIcon(id) {
@@ -760,6 +723,22 @@ function cause() {
       <h2 class="t2">${c.name}</h2>
       <p class="t3">${c.description}</p>
       ${c.priority_note ? `<p style="font-size:var(--t4);color:var(--accent);font-weight:600">${c.priority_note}</p>` : ''}
+    </div>
+    <div style="background:var(--danger-bg);border:1px solid var(--danger);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="color:var(--danger);font-weight:700;flex-shrink:0;font-size:16px">!</span>
+        <div>
+          <p style="margin:0;font-size:var(--t4);font-weight:600;color:var(--danger)">관절이 눈에 띄게 부어있어요</p>
+          <p style="margin:3px 0 0;font-size:var(--t4);color:var(--text-sub)">운동 후뿐 아니라 지금도 부어있는 경우</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="color:var(--danger);font-weight:700;flex-shrink:0;font-size:16px">!</span>
+        <div>
+          <p style="margin:0;font-size:var(--t4);font-weight:600;color:var(--danger)">만지면 열감이 느껴져요</p>
+          <p style="margin:3px 0 0;font-size:var(--t4);color:var(--text-sub)">다른 쪽 관절과 비교했을 때 확실히 따뜻함 — 재활 전 전문의 진단을 먼저 받으세요.</p>
+        </div>
+      </div>
     </div>
     <p style="font-size:var(--t4);color:var(--text-sub);text-align:center;padding:0 4px">이 앱은 재활 보조 도구이며 전문가 진단을 대체하지 않습니다</p>
     <button class="btn-primary" onclick="saveRehabRecord();go('route')">재활 루트 보기</button>`;
@@ -910,7 +889,7 @@ function complete() {
 
 /* ── 액션 ── */
 const BACK_MAP = {
-  pain_site: 'home', red_flag: 'pain_site', movement: 'red_flag',
+  pain_site: 'home', movement: 'pain_site',
   question: 'movement', test: 'question',
   cause: null, // dynamic: test or question
   route: 'cause', complete: 'route', danger: 'home', coming_soon: 'movement'
@@ -934,7 +913,7 @@ function selectPainSite(id) {
   S.causeId      = null;
   S.stageIndex   = 0;
   S.questionDepth = 0;
-  go('red_flag');
+  go('movement');
 }
 
 
