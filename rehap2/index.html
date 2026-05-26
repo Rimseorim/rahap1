@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrossFit Rehab Guide</title>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --navy:       #2C2C2C;
+      --navy-light: #444444;
+      --accent:     #4A7FC1;
+      --bg:         #F5F6FA;
+      --card:       #FFFFFF;
+      --text:       #1A1A2E;
+      --text-sub:   #6B7280;
+      --border:     #D1D5DB;
+      --danger:     #DC2626;
+      --danger-bg:  #FEF2F2;
+      --success:    #16A34A;
+      --choice-sel: #EEF2FF;
+      --t1: 22px; --w1: 700;
+      --t2: 17px; --w2: 600;
+      --t3: 15px; --w3: 400;
+      --t4: 14px; --w4: 400;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; justify-content: center;
+    }
+    .app { width: 100%; max-width: 480px; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Progress */
+    .progress-wrap {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--card); padding: 14px 20px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .progress-label span { font-size: var(--t4); font-weight: var(--w4); color: var(--text-sub); }
+    .progress-label span:last-child { font-weight: 600; color: var(--navy-light); }
+    .progress-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--navy-light); border-radius: 99px; transition: width 0.3s ease; }
+
+    /* Screen */
+    .screen { flex: 1; padding: 24px 20px 32px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* Typography helpers */
+    .t1 { font-size: var(--t1); font-weight: var(--w1); line-height: 1.4; }
+    .t2 { font-size: var(--t2); font-weight: var(--w2); line-height: 1.5; }
+    .t3 { font-size: var(--t3); font-weight: var(--w3); line-height: 1.6; color: var(--text-sub); }
+    .t4 { font-size: var(--t4); font-weight: var(--w4); color: var(--text-sub); }
+
+    /* Card */
+    .card { background: var(--card); border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.10); border: 1px solid var(--border); padding: 20px; }
+
+    /* Choices */
+    .choices { display: flex; flex-direction: column; gap: 6px; }
+    .choice-btn {
+      width: 100%; min-height: 52px; padding: 12px 16px;
+      border-radius: 10px; border: 1px solid var(--border);
+      background: var(--card); font-family: inherit;
+      font-size: var(--t2); font-weight: var(--w2); color: var(--text);
+      text-align: left; cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .choice-btn:hover { border-color: var(--accent); background: var(--choice-sel); }
+    .choice-btn .sub { font-size: var(--t4); color: var(--text-sub); display: block; margin-top: 2px; }
+
+    /* Buttons */
+    .btn-primary {
+      width: 100%; height: 54px; border-radius: 10px; border: none;
+      background: var(--navy); color: white; font-family: inherit;
+      font-size: var(--t2); font-weight: var(--w2); cursor: pointer;
+      transition: background 0.15s; margin-top: auto;
+    }
+    .btn-primary:hover { background: var(--navy-light); }
+    .btn-back-circle {
+      width: 38px; height: 38px; flex-shrink: 0;
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; color: var(--navy);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .btn-back-circle:hover { background: var(--choice-sel); }
+    .btn-danger {
+      width: 100%; height: 54px; border-radius: 10px;
+      border: 2px solid var(--danger); background: var(--danger);
+      color: white; font-family: inherit; font-size: var(--t2); font-weight: var(--w2); cursor: pointer;
+    }
+
+    /* Stage Indicator */
+    .stage-wrap { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+    .stage-item {
+      flex-shrink: 0; padding: 5px 12px; border-radius: 99px;
+      font-size: var(--t4); font-weight: 600;
+      border: 1.5px solid var(--border); color: var(--text-sub); background: var(--card);
+    }
+    .stage-item.active { background: var(--navy); color: white; border-color: var(--navy); }
+    .stage-item.done  { background: #DCFCE7; color: var(--success); border-color: var(--success); }
+
+    /* Exercise Card */
+    .exercise-card {
+      background: var(--card); border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10); border: 1px solid var(--border);
+      padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .exercise-card h3 { font-size: var(--t2); font-weight: var(--w2); }
+    .why-label { font-size: var(--t4); font-weight: 600; color: var(--accent); letter-spacing: 0.04em; }
+    .why-text  { font-size: var(--t3); line-height: 1.6; color: var(--text-sub); }
+    .cue-text  { font-size: var(--t4); color: var(--navy); background: var(--choice-sel); border-radius: 6px; padding: 6px 10px; }
+    .sets-text { font-size: var(--t4); font-weight: 600; color: var(--navy); }
+
+    /* Cause Tag */
+    .cause-tag {
+      display: inline-block; background: var(--choice-sel); color: var(--navy-light);
+      border-radius: 6px; padding: 4px 10px;
+      font-size: var(--t4); font-weight: 600;
+    }
+
+    /* Danger */
+    .danger-alert {
+      background: var(--danger-bg); border: 2px solid var(--danger);
+      border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .danger-alert h2 { font-size: var(--t2); font-weight: var(--w2); color: var(--danger); }
+    .danger-alert p  { font-size: var(--t3); line-height: 1.6; }
+
+    /* Home */
+    .home-hero { background: var(--navy); border-radius: 16px; padding: 28px 24px; color: white; }
+    .home-hero .badge {
+      display: inline-block; background: rgba(255,255,255,0.15);
+      border-radius: 99px; padding: 4px 12px;
+      font-size: var(--t4); font-weight: 600; margin-bottom: 14px;
+    }
+    .home-hero h1 { font-size: var(--t1); font-weight: var(--w1); line-height: 1.4; margin-bottom: 10px; }
+    .home-hero p  { font-size: var(--t3); line-height: 1.6; color: rgba(255,255,255,0.75); }
+    .info-row { display: flex; align-items: center; gap: 12px; font-size: var(--t3); }
+    .info-row .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--navy-light); flex-shrink: 0; }
+
+    /* Complete */
+    @keyframes pop-in {
+      0%   { transform: scale(0); opacity: 0; }
+      65%  { transform: scale(1.25); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .complete-icon {
+      width: 72px; height: 72px; background: #DCFCE7; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 12px;
+      animation: pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    .complete-wrap { text-align: center; padding: 12px 0; animation: fade-up 0.4s 0.2s ease both; }
+
+    /* Password toggle */
+    .pwd-wrap { position: relative; }
+    .pwd-wrap input { width: 100%; padding-right: 44px; }
+    .pwd-toggle {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--text-sub); font-size: 18px; padding: 4px;
+    }
+
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #1A1A2E; color: white; border-radius: 10px;
+      padding: 12px 20px; font-size: var(--t4); font-weight: 600;
+      white-space: nowrap; z-index: 99999;
+      opacity: 0; transition: opacity 0.2s ease; pointer-events: none;
+    }
+    #toast.show { opacity: 1; }
+
+    /* Scroll top on nav */
+    html { scroll-behavior: smooth; }
+
+    /* 아코디언 화살표 회전 */
+    details .how-chevron { transition: transform 0.2s ease; }
+    details[open] .how-chevron { transform: rotate(180deg); }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <div id="progress-bar" style="display:none" class="progress-wrap">
+    <div class="progress-label">
+      <span id="pb-label"></span>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span id="pb-pct"></span>
+        <button class="btn-back-circle" id="pb-back" onclick="goBack()">←</button>
+        <button class="btn-back-circle" onclick="go(USER ? 'home' : 'landing')" title="홈">⌂</button>
+      </div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="pb-fill"></div></div>
+  </div>
+  <div class="screen" id="main-screen"></div>
+</div>
+
+<div id="toast"></div>
+
+<!-- 영상 모달 -->
+<div id="video-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#000;border-radius:12px;overflow:hidden;width:100%;max-width:480px;position:relative">
+    <button onclick="closeVideoModal()" style="position:absolute;top:8px;right:10px;background:none;border:none;color:white;font-size:22px;cursor:pointer;z-index:1;line-height:1">✕</button>
+    <div style="position:relative;padding-top:56.25%">
+      <iframe id="video-iframe" src="" frameborder="0" allowfullscreen
+        style="position:absolute;inset:0;width:100%;height:100%"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── 진행 저장 ── */
+function saveProgress() {
+  if (S.screen !== 'home') localStorage.setItem('rehab_progress', JSON.stringify(S));
+}
+function loadProgress() {
+  try { const s = localStorage.getItem('rehab_progress'); return s ? JSON.parse(s) : null; }
+  catch(e) { return null; }
+}
+async function resumeProgress() {
+  const saved = loadProgress();
+  if (!saved) return;
+  if (saved.movementId && !DATA) {
+    DATA = await fetch(`data/movements/${saved.movementId}.json`).then(r => r.json());
+  }
+  Object.assign(S, saved);
+  render();
+}
+
+/* ── 상태 ── */
+const S = {
+  screen: 'home',
+  painSiteId: null,
+  painIntensity: null,
+  movementId: null,
+  questionId: null,
+  testId: null,
+  causeId: null,
+  stageIndex: 0,
+  questionDepth: 0,
+  isRedFlagDanger: false,
+};
+
+/* ── 사용자 ── */
+let USER = JSON.parse(localStorage.getItem('rehab_user') || 'null');
+
+function saveUser(u) { USER = u; localStorage.setItem('rehab_user', JSON.stringify(u)); }
+function clearUser() { USER = null; localStorage.removeItem('rehab_user'); }
+
+const API = 'https://web-production-28002.up.railway.app';
+
+/* ── 비밀번호 토글 ── */
+function togglePwd(id) {
+  const inp = document.getElementById(id);
+  const btn = inp.parentElement.querySelector('.pwd-toggle i');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.className = 'ti ti-eye-off';
+  } else {
+    inp.type = 'password';
+    btn.className = 'ti ti-eye';
+  }
+}
+
+/* ── 화면 꺼짐 방지 ── */
+let _wakeLock = null;
+async function acquireWakeLock() {
+  if (!('wakeLock' in navigator) || _wakeLock) return;
+  try { _wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+}
+function releaseWakeLock() {
+  if (_wakeLock) { _wakeLock.release(); _wakeLock = null; }
+}
+
+let _toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function apiPost(path, body) {
+  const res = await fetch(API + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.detail || '오류가 발생했습니다.');
+  return data;
+}
+
+const DEMO_ACCOUNTS = [
+  { email: 'kim@rehab.com',  password: '1234', nickname: '김크파' },
+  { email: 'lee@rehab.com',  password: '1234', nickname: '이바벨' },
+  { email: 'park@rehab.com', password: '1234', nickname: '박무산' },
+  { email: 'choi@rehab.com', password: '1234', nickname: '최올림' },
+  { email: 'jung@rehab.com', password: '1234', nickname: '정케틀' },
+];
+
+async function doLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('inp-email').value;
+  const password = document.getElementById('inp-password').value;
+  const errEl = document.getElementById('auth-error');
+
+  // 데모 계정 먼저 체크 (백엔드 없이도 작동)
+  const demo = DEMO_ACCOUNTS.find(a => a.email === email && a.password === password);
+  if (demo) {
+    saveUser({ token: 'demo', nickname: demo.nickname });
+    go('home');
+    return;
+  }
+
+  const btn = e.submitter;
+  btn.disabled = true; btn.textContent = '로그인 중...';
+  try {
+    const data = await apiPost('/auth/login', { email, password });
+    saveUser(data);
+    go('home');
+  } catch(err) {
+    errEl.textContent = err.message;
+    showToast('로그인에 실패했습니다.');
+  } finally {
+    btn.disabled = false; btn.textContent = '로그인';
+  }
+}
+
+async function doSignup(e) {
+  e.preventDefault();
+  const email = document.getElementById('inp-email').value;
+  const password = document.getElementById('inp-password').value;
+  const nickname = document.getElementById('inp-nickname').value;
+  const errEl = document.getElementById('auth-error');
+  const btn = e.submitter;
+  btn.disabled = true; btn.textContent = '가입 중...';
+  try {
+    const data = await apiPost('/auth/signup', { email, password, nickname });
+    saveUser(data);
+    go('home');
+  } catch(err) {
+    errEl.textContent = err.message;
+    showToast('회원가입에 실패했습니다.');
+  } finally {
+    btn.disabled = false; btn.textContent = '가입하기';
+  }
+}
+
+function logout() { clearUser(); render(); }
+function naverLogin() { window.location.href = `${API}/auth/naver/login`; }
+
+let MY_RECORDS = null;
+
+async function resumeRecord(movementId, painSiteId, causeId, stageIndex) {
+  try {
+    DATA = await fetch(`data/movements/${movementId}.json`).then(r => r.json());
+    S.movementId  = movementId;
+    S.painSiteId  = painSiteId;
+    S.causeId     = causeId;
+    S.stageIndex  = stageIndex;
+    go('route');
+  } catch(e) { showToast('데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'); }
+}
+
+async function deleteRecord(id) {
+  if (!confirm('기록을 삭제할까요?')) return;
+  await apiPost('/records/delete', { token: USER.token, record_id: id });
+  try {
+    const records = await fetch(`${API}/records/mine?token=${USER.token}`).then(r => r.json());
+    LAST_RECORD = records.length ? records[records.length - 1] : null;
+  } catch(e) { LAST_RECORD = null; }
+  goMyRecords();
+}
+
+async function goMyRecords() {
+  try {
+    const res = await fetch(`${API}/records/mine?token=${USER.token}`);
+    const data = await res.json();
+    MY_RECORDS = Array.isArray(data) ? data : [];
+  } catch(e) { MY_RECORDS = []; showToast('기록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'); }
+  go('my_records');
+}
+
+function my_records() {
+  const movementNames = { 'squat': '스쿼트', 'lunge': '런지', 'deadlift': '데드리프트' };
+  const painNames = { knee: '무릎', 'lower-back': '허리', ankle: '발목', shoulder: '어깨', wrist: '손목' };
+  const causeLabel = id => {
+    if (!id) return '';
+    const map = {
+      'cause-a': 'Case A', 'cause-b': 'Case B', 'cause-c': 'Case C', 'cause-d': 'Case D',
+      'cause-dp': 'Case DP', 'cause-a-mild': 'Case A (경증)',
+      'cause-case1': 'Case 1', 'cause-case2': 'Case 2', 'cause-case3': 'Case 3', 'cause-case4': 'Case 4',
+    };
+    return map[id] || id.replace(/^cause-/, 'Case ').toUpperCase();
+  };
+
+  if (!MY_RECORDS || MY_RECORDS.length === 0) {
+    return `
+      <div class="home-hero"><h1>내 기록</h1></div>
+      <div class="card" style="text-align:center;color:var(--text-sub);padding:40px 20px">
+        아직 저장된 기록이 없어요.<br>감별을 완료하면 여기에 기록됩니다.
+      </div>
+      <button class="btn-primary" style="background:var(--navy-light)" onclick="go('home')">홈으로</button>`;
+  }
+
+  const byDate = {};
+  [...MY_RECORDS].reverse().forEach(r => {
+    const d = new Date(r.updated_at).toLocaleDateString('ko-KR');
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(r);
+  });
+
+  const cards = Object.entries(byDate).map(([date, records]) => {
+    const recordCards = records.map(r => `
+      <div class="card" style="display:flex;flex-direction:column;gap:8px;cursor:pointer" onclick="resumeRecord('${r.movement_id}','${r.pain_site_id}','${r.cause_id}',${r.stage_index})">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:600;font-size:var(--t3)">${movementNames[r.movement_id] || r.movement_id}</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span style="background:var(--choice-sel);color:var(--navy);border-radius:6px;padding:3px 8px;font-size:var(--t4)">${painNames[r.pain_site_id] || r.pain_site_id}</span>
+          <span style="background:var(--choice-sel);color:var(--navy);border-radius:6px;padding:3px 8px;font-size:var(--t4)">${causeLabel(r.cause_id)}</span>
+          <span style="background:var(--choice-sel);color:var(--navy);border-radius:6px;padding:3px 8px;font-size:var(--t4)">Stage ${r.stage_index + 1}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+          <span style="font-size:var(--t4);color:var(--accent)">이어서 하기 →</span>
+          <button onclick="event.stopPropagation();deleteRecord(${r.id})" style="font-size:var(--t4);color:var(--danger);background:none;border:none;cursor:pointer;padding:4px 8px">삭제</button>
+        </div>
+      </div>`).join('');
+    return `
+      <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+        <span style="font-size:var(--t4);font-weight:600;color:var(--text-sub);white-space:nowrap">${date}</span>
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+      ${recordCards}`;
+  }).join('');
+
+  return `
+    <div class="home-hero"><h1>내 기록</h1></div>
+    ${cards}
+    <button class="btn-primary" style="background:var(--navy-light)" onclick="go('home')">홈으로</button>`;
+}
+
+async function saveRehabRecord() {
+  if (!USER) return;
+  try {
+    const result = await apiPost('/records/save', {
+      token: USER.token,
+      movement_id: S.movementId,
+      pain_site_id: S.painSiteId,
+      cause_id: S.causeId || '',
+      stage_index: S.stageIndex || 0,
+    });
+    const ps = DATA?.pain_sites?.find(p => p.id === S.painSiteId);
+    const cause = ps?.causes?.find(c => c.id === S.causeId);
+    const stages = cause?.route?.stages || [];
+    LAST_RECORD = {
+      id: result.id,
+      movement_id: S.movementId,
+      pain_site_id: S.painSiteId,
+      cause_id: S.causeId || '',
+      stage_index: S.stageIndex || 0,
+      updated_at: new Date().toISOString(),
+      _stageName: stages[S.stageIndex]?.name || null,
+      _totalStages: stages.length || 6,
+    };
+  } catch(e) { showToast('기록 저장에 실패했습니다.'); }
+}
+
+/* ── 데이터 ── */
+let DATA = null;
+let MANIFEST = null;
+let LAST_RECORD = null;
+
+async function init() {
+  // 네이버 OAuth 콜백 처리 (팝업 자식 창인 경우)
+  const params = new URLSearchParams(location.search);
+  const isOAuthReturn = !!params.get('naver_token');
+  if (isOAuthReturn) {
+    saveUser({ token: params.get('naver_token'), nickname: params.get('naver_nickname') || '사용자' });
+    history.replaceState({}, '', location.pathname);
+    S.screen = 'home';
+  } else if (params.get('error')) {
+    history.replaceState({}, '', location.pathname);
+  }
+
+  MANIFEST = await fetch('data/movements/manifest.json').then(r => r.json());
+  if (USER) {
+    try {
+      const records = await fetch(`${API}/records/mine?token=${USER.token}`).then(r => r.json());
+      LAST_RECORD = records.length ? records[records.length - 1] : null;
+      if (LAST_RECORD) {
+        try {
+          const mv = await fetch(`data/movements/${LAST_RECORD.movement_id}.json`).then(r => r.json());
+          const ps = mv.pain_sites.find(p => p.id === LAST_RECORD.pain_site_id);
+          const cause = ps?.causes.find(c => c.id === LAST_RECORD.cause_id);
+          const stages = cause?.route?.stages || [];
+          LAST_RECORD._stageName = stages[LAST_RECORD.stage_index]?.name || null;
+          LAST_RECORD._totalStages = stages.length;
+        } catch(e) {}
+      }
+    } catch(e) { LAST_RECORD = null; }
+  }
+  if (!isOAuthReturn) {
+    const saved = loadProgress();
+    if (saved && saved.movementId) {
+      DATA = await fetch(`data/movements/${saved.movementId}.json`).then(r => r.json());
+      Object.assign(S, saved);
+    }
+  }
+  render();
+}
+
+
+/* ── 헬퍼 ── */
+const el = id => document.getElementById(id);
+const find = (arr, id) => arr && arr.find(x => x.id === id);
+
+function getMovement()  { return DATA; }
+function getPainSite()  { return find(DATA.pain_sites, S.painSiteId); }
+function getQuestion()  { return find(getPainSite().questions, S.questionId); }
+function getTest()      { return find(getPainSite().tests, S.testId); }
+function getCause()     { return find(getPainSite().causes, S.causeId); }
+
+// manifest 기반 — 전체 종목의 pain_site 수집
+function getAllPainSites() {
+  const map = {};
+  MANIFEST.forEach(m => m.pain_sites.forEach(ps => {
+    if (!map[ps.id]) map[ps.id] = { id: ps.id, name: ps.name };
+  }));
+  return Object.values(map);
+}
+
+// manifest 기반 — 선택한 부위를 가진 종목만
+function getMovementsForSite() {
+  return MANIFEST.filter(m => m.pain_sites.some(p => p.id === S.painSiteId));
+}
+
+
+/* ── 진행률 ── */
+const PROGRESS = {
+  home: 0, pain_site: 10, movement: 30,
+  question: 55, test: 70, cause: 82, route: 92, complete: 100, danger: 50, coming_soon: 35
+};
+const LABEL = {
+  pain_site: '통증 부위', movement: '동작 선택',
+  question: '챕터1 · 감별 질문', test: '챕터2 · 직접 테스트',
+  cause: '원인 확정', route: '재활 루트', complete: '완료', danger: '주의'
+};
+
+function updateProgress(screen) {
+  const bar = el('progress-bar');
+  if (['landing', 'home', 'login', 'signup', 'my_records'].includes(screen)) { bar.style.display = 'none'; return; }
+  bar.style.display = 'block';
+  let pct, label;
+  if ((screen === 'route' || screen === 'complete') && S.causeId) {
+    const total = getCause().route.stages.length;
+    const base  = PROGRESS['cause'] || 82;
+    const idx   = screen === 'complete' ? S.stageIndex + 1 : S.stageIndex;
+    pct   = Math.round(base + (idx / total) * (100 - base));
+    label = LABEL[screen] || '';
+  } else {
+    pct   = PROGRESS[screen] || 50;
+    label = LABEL[screen] || '';
+  }
+  el('pb-label').textContent = label;
+  el('pb-pct').textContent = pct + '%';
+  el('pb-fill').style.width = pct + '%';
+}
+
+/* ── 렌더 ── */
+function render() {
+  const publicScreens = ['landing', 'login', 'signup'];
+  if (!USER && !publicScreens.includes(S.screen)) {
+    S.screen = 'landing';
+  }
+  updateProgress(S.screen);
+  window.scrollTo(0, 0);
+  if (['route', 'test'].includes(S.screen)) acquireWakeLock();
+  else releaseWakeLock();
+  const screens = { landing, home, login, signup, my_records, pain_site, movement, question, test, cause, route, danger, complete, coming_soon };
+  el('main-screen').innerHTML = (screens[S.screen] || landing)();
+}
+
+/* ── 화면별 HTML 생성 ── */
+
+function landing() {
+  return `
+    <div style="background:var(--navy);border-radius:20px;padding:32px 24px 28px;color:white;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;background:rgba(255,255,255,0.05);border-radius:50%"></div>
+      <div style="position:absolute;bottom:-50px;left:-20px;width:180px;height:180px;background:rgba(255,255,255,0.04);border-radius:50%"></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px">
+        <span style="background:rgba(255,255,255,0.25);border-radius:6px;padding:3px 10px;font-size:var(--t4);font-weight:600;color:white">부상</span>
+        <span style="font-size:var(--t4);opacity:0.8;color:white">→</span>
+        <span style="background:rgba(255,255,255,0.25);border-radius:6px;padding:3px 10px;font-size:var(--t4);font-weight:600;color:white">원인</span>
+        <span style="font-size:var(--t4);opacity:0.8;color:white">→</span>
+        <span style="background:rgba(255,255,255,0.25);border-radius:6px;padding:3px 10px;font-size:var(--t4);font-weight:600;color:white">재활 루틴</span>
+      </div>
+      <h1 style="font-size:22px;font-weight:800;line-height:1.3;margin:0">박스에서 5분 안에<br>시작하세요</h1>
+    </div>
+
+    <div style="display:flex;flex-direction:column">
+      ${[
+        ['ti-bandage',      '운동하다 다쳤어요',        '어떤 동작에서 어디가 아픈지 알려주세요'],
+        ['ti-help-circle',  '재활이 막막해요',          '뭘 해야 할지 모를 때 원인부터 찾아드려요'],
+        ['ti-list-check',   '재활 루틴 바로 받고 싶어요', '원인에 맞는 재활 루틴이 바로 나와요'],
+      ].map(([icon, title, desc], i, arr) => `
+        <div style="display:flex;align-items:center;gap:16px;padding:18px 0;
+          ${i < arr.length - 1 ? 'border-bottom:1px solid var(--border)' : ''}">
+          <i class="ti ${icon}" style="font-size:24px;color:var(--navy);flex-shrink:0;width:28px;text-align:center"></i>
+          <div>
+            <p style="margin:0;font-size:var(--t2);font-weight:700;color:var(--text)">${title}</p>
+            <p style="margin:4px 0 0;font-size:var(--t4);color:var(--text-sub);line-height:1.5">${desc}</p>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <button class="btn-primary" style="font-size:var(--t2);padding:16px" onclick="go('login')">시작하기</button>
+
+    <p style="text-align:center;font-size:var(--t4);color:var(--text-sub);line-height:1.6;padding:0 8px">이 앱은 재활 보조 도구이며<br>전문가 진단을 대체하지 않습니다</p>`;
+}
+
+function home() {
+  const movementNames = {
+    'squat': '스쿼트', 'lunge': '런지', 'deadlift': '데드리프트',
+    'pullup': '풀업', 'kipping': '키핑', 'press-vertical': '수직 프레스', 'press-horizontal': '수평 프레스', 'row': '로우'
+  };
+  const painNames = {
+    knee: '무릎', 'lower-back': '허리', ankle: '발목',
+    shoulder: '어깨', wrist: '손목', elbow: '팔꿈치', hip: '고관절'
+  };
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? '좋은 아침이에요' : hour < 18 ? '안녕하세요' : hour < 22 ? '좋은 저녁이에요' : '늦은 시간까지 수고해요';
+
+  const lastCard = LAST_RECORD ? (() => {
+    const date = new Date(LAST_RECORD.updated_at).toLocaleDateString('ko-KR');
+    const mvName = movementNames[LAST_RECORD.movement_id] || LAST_RECORD.movement_id;
+    const siteName = painNames[LAST_RECORD.pain_site_id] || LAST_RECORD.pain_site_id;
+    const totalStages = LAST_RECORD._totalStages || 6;
+    const pct = Math.round(((LAST_RECORD.stage_index + 1) / totalStages) * 100);
+    return `
+      <div class="card" style="cursor:pointer;border:1.5px solid var(--accent)"
+           onclick="resumeRecord('${LAST_RECORD.movement_id}','${LAST_RECORD.pain_site_id}','${LAST_RECORD.cause_id}',${LAST_RECORD.stage_index})">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:var(--t4);font-weight:600;color:var(--accent)">재활 진행 중</span>
+          <span style="font-size:var(--t4);color:var(--text-sub)">${date}</span>
+        </div>
+        <p style="margin:0 0 10px;font-weight:700;font-size:var(--t2)">${mvName} · ${siteName}</p>
+        <div style="height:4px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:8px">
+          <div style="height:100%;width:${pct}%;background:var(--accent);border-radius:99px;transition:width 0.3s"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:var(--t4);color:var(--text-sub)">${LAST_RECORD._stageName ? LAST_RECORD._stageName + ' 단계' : (LAST_RECORD.stage_index + 1) + '단계'}</span>
+          <span style="font-size:var(--t3);color:var(--accent);font-weight:600">이어하기 →</span>
+        </div>
+      </div>`;
+  })() : '';
+
+  const progressSummary = (() => {
+    if (!LAST_RECORD) return '';
+    const totalStages = LAST_RECORD._totalStages || 6;
+    const stage = LAST_RECORD.stage_index + 1;
+    const pct = Math.round((stage / totalStages) * 100);
+    const stageName = LAST_RECORD._stageName || `${stage}단계`;
+    const msg = pct >= 83 ? '마지막 단계예요. 조금만 더!' :
+                pct >= 50 ? '절반 넘었어요. 잘 하고 있어요.' :
+                            '재활을 시작했어요. 꾸준히 해요.';
+    return `<p style="font-size:var(--t4);color:var(--accent);font-weight:600;margin:4px 0 0">${msg} · ${stageName}</p>`;
+  })();
+
+  return `
+    <div style="padding:8px 0 16px">
+      <p style="margin:0 0 2px;font-size:var(--t3);color:var(--text-sub)">${greeting}</p>
+      <h1 style="font-size:32px;font-weight:800;color:var(--navy);margin:0">${USER.nickname}님</h1>
+      ${progressSummary}
+    </div>
+
+    ${lastCard}
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+      <button class="btn-primary" style="padding:16px;font-size:var(--t2)" onclick="go('pain_site')">지금 시작하기</button>
+      <button class="btn-primary" style="background:var(--navy-light);padding:14px" onclick="goMyRecords()">내 기록 보기</button>
+      <div style="text-align:center;padding:4px 0">
+        <a href="#" onclick="logout();return false;" style="font-size:var(--t4);color:var(--text-sub);text-decoration:none">로그아웃</a>
+      </div>
+      <p style="text-align:center;font-size:var(--t4);color:var(--border);line-height:1.6;margin:0">이 앱은 재활 보조 도구이며<br>전문가 진단을 대체하지 않습니다</p>
+    </div>`;
+}
+
+function login() {
+  return `
+    <div style="display:flex;align-items:center;justify-content:center;padding-top:40px">
+      <div style="width:100%;max-width:360px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <button onclick="go('landing')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-sub);padding:0">←</button>
+          <h1 style="font-size:var(--t1);font-weight:700;color:var(--navy);margin:0">로그인</h1>
+        </div>
+        <form class="card" style="display:flex;flex-direction:column;gap:12px" onsubmit="doLogin(event)">
+          <input id="inp-email" type="email" placeholder="이메일" required
+            style="padding:12px;border:1px solid var(--border);border-radius:8px;font-size:var(--t3);outline:none">
+          <div class="pwd-wrap">
+            <input id="inp-password" type="password" placeholder="비밀번호" required
+              style="padding:12px;border:1px solid var(--border);border-radius:8px;font-size:var(--t3);outline:none">
+            <button type="button" class="pwd-toggle" onclick="togglePwd('inp-password')"><i class="ti ti-eye"></i></button>
+          </div>
+          <p id="auth-error" style="color:var(--danger);font-size:var(--t4);margin:0"></p>
+          <button type="submit" class="btn-primary">로그인</button>
+        </form>
+        <button class="btn-primary" style="background:var(--navy-light)" onclick="go('signup')">회원가입</button>
+        <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <span style="font-size:var(--t4);color:var(--text-sub)">또는</span>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+        </div>
+        <button class="btn-primary" style="background:#03C75A;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;height:60px;font-size:var(--t2)" onclick="naverLogin()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
+          네이버로 로그인
+        </button>
+      </div>
+    </div>
+`;
+}
+
+function signup() {
+  return `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0">
+      <button onclick="go('login')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-sub);padding:0">←</button>
+      <h1 style="font-size:var(--t1);font-weight:700;color:var(--navy);margin:0">회원가입</h1>
+    </div>
+    <form class="card" style="display:flex;flex-direction:column;gap:12px" onsubmit="doSignup(event)">
+      <input id="inp-email" type="email" placeholder="이메일" required
+        style="padding:12px;border:1px solid var(--border);border-radius:8px;font-size:var(--t3);outline:none">
+      <input id="inp-nickname" type="text" placeholder="닉네임" required
+        style="padding:12px;border:1px solid var(--border);border-radius:8px;font-size:var(--t3);outline:none">
+      <div class="pwd-wrap">
+        <input id="inp-password" type="password" placeholder="비밀번호" required
+          style="padding:12px;border:1px solid var(--border);border-radius:8px;font-size:var(--t3);outline:none">
+        <button type="button" class="pwd-toggle" onclick="togglePwd('inp-password')"><i class="ti ti-eye"></i></button>
+      </div>
+      <p id="auth-error" style="color:var(--danger);font-size:var(--t4);margin:0"></p>
+      <button type="submit" class="btn-primary">가입하기</button>
+    </form>
+    <button class="btn-primary" style="background:transparent;color:var(--text-sub);border:1px solid var(--border)" onclick="go('login')">이미 계정이 있어요</button>`;
+}
+
+const PAIN_ICONS = { knee: '🦵', 'lower-back': '🦴', ankle: '🦶', shoulder: '💪', wrist: '🤝', elbow: '🦾', hip: '🦯', chest: '🫀' };
+function painIcon(id) {
+  const icon = PAIN_ICONS[id];
+  return icon ? `<span style="font-size:20px">${icon}</span>` : '<span>●</span>';
+}
+
+function pain_site() {
+  const sites = getAllPainSites();
+  const btns = sites.map(p => `
+    <button class="choice-btn" onclick="selectPainSite('${p.id}')">
+      <span>${p.name}</span>
+    </button>`).join('');
+  return `
+    <div>
+      <h1 class="t1">어디가 아픈가요?</h1>
+      <p class="t3" style="margin-top:8px">가장 통증이 심한 부위 하나를 선택하세요.</p>
+    </div>
+    <div class="choices">${btns}</div>`;
+}
+
+
+const MOVEMENT_ICONS = { 'squat': '🏋️', 'lunge': '🦵', 'deadlift': '💪', 'pullup': '🙌', 'kipping': '🙌', 'press-vertical': '🏋️', 'press-horizontal': '🤸', 'row': '💪' };
+function movementIcon(id) {
+  const icon = MOVEMENT_ICONS[id];
+  return icon ? `<span style="font-size:20px">${icon}</span>` : '<span>🏋️</span>';
+}
+const MOVEMENT_DESC  = { 'squat': 'Squat', 'lunge': 'Lunge', 'deadlift': 'Deadlift', 'pullup': 'Pull-up', 'kipping': 'Kipping', 'press-vertical': 'Vertical Press', 'press-horizontal': 'Horizontal Press', 'row': 'Row' };
+
+const ALL_MOVEMENT_NAMES = {
+  'squat': '스쿼트', 'lunge': '런지', 'deadlift': '데드리프트',
+  'pullup': '풀업', 'kipping': '키핑', 'press-vertical': '수직 프레스',
+  'press-horizontal': '수평 프레스', 'row': '로우'
+};
+const ALL_PAIN_NAMES = {
+  knee: '무릎', 'lower-back': '허리', ankle: '발목',
+  shoulder: '어깨', wrist: '손목', elbow: '팔꿈치', hip: '고관절', chest: '흉근'
+};
+
+function contextBar() {
+  const chips = [];
+  if (S.painSiteId)  chips.push(ALL_PAIN_NAMES[S.painSiteId]  || S.painSiteId);
+  if (S.movementId)  chips.push(ALL_MOVEMENT_NAMES[S.movementId] || S.movementId);
+  if (!chips.length) return '';
+  const items = chips.map(c =>
+    `<span style="background:var(--choice-sel);color:var(--navy);border-radius:99px;
+      padding:4px 10px;font-size:var(--t4);font-weight:600;white-space:nowrap">${c}</span>`
+  ).join('<span style="color:var(--border);font-size:var(--t4)">›</span>');
+  return `<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">${items}</div>`;
+}
+
+function movement() {
+  const mvs = getMovementsForSite();
+  const btns = mvs.map(m => `
+    <button class="choice-btn" onclick="selectMovement('${m.id}')">
+      <span>${m.name}</span>
+    </button>`).join('');
+  return `
+    ${contextBar()}
+    <div>
+      <h1 class="t1">어떤 동작에서<br>통증이 나타나나요?</h1>
+    </div>
+    <div class="choices">${btns}</div>`;
+}
+
+function question() {
+  const q = getQuestion();
+  const btns = q.choices.map(c => `
+    <button class="choice-btn" onclick="selectChoice('${c.next}')">
+      ${c.text}
+    </button>`).join('');
+  return `
+    ${contextBar()}
+    <div>
+      <h1 class="t1">${q.text}</h1>
+      ${q.sub ? `<p class="t3" style="margin-top:8px">${q.sub}</p>` : ''}
+    </div>
+    <div class="choices">${btns}</div>`;
+}
+
+function test() {
+  const t = getTest();
+  const steps = t.steps.map((s, i) => `
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--navy);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span>
+      <span style="font-size:var(--t3);line-height:1.6;color:var(--text)">${s}</span>
+    </div>`).join('');
+
+  return `
+    ${contextBar()}
+    <div>
+      <div style="display:inline-block;background:var(--navy);color:white;border-radius:99px;padding:4px 12px;font-size:var(--t4);font-weight:600;margin-bottom:12px">챕터2 · 직접 테스트</div>
+      <h1 class="t1">${t.name}</h1>
+      <p class="t3" style="margin-top:6px">${t.purpose}</p>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:14px">
+      ${steps}
+      ${t.note ? `<p style="font-size:var(--t4);color:var(--accent);border-top:1px solid var(--border);padding-top:10px;margin-top:2px">● ${t.note}</p>` : ''}
+      <button onclick="openVideoModal('${t.video_url||''}')" style="margin-top:4px;background:var(--navy);color:white;border:none;border-radius:8px;padding:10px;font-size:var(--t4);font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">▶ 영상으로 보기</button>
+    </div>
+    <p class="t4" style="text-align:center;font-weight:600">결과를 선택하세요</p>
+    <div class="choices">
+      <button class="choice-btn" style="border-color:var(--success);color:var(--success)" onclick="selectTestResult('${t.pass_next}')">
+        <span style="font-size:18px">✓</span>
+        <span>${t.pass_text}</span>
+      </button>
+      <button class="choice-btn" style="border-color:var(--danger);color:var(--danger)" onclick="selectTestResult('${t.fail_next}')">
+        <span style="font-size:18px">✗</span>
+        <span>${t.fail_text}</span>
+      </button>
+    </div>
+    <p style="text-align:center;font-size:var(--t4);color:var(--text-sub)">이 테스트는 원인의 가능성을 확인하는 것이며 의료 진단이 아닙니다</p>`;
+}
+
+function cause() {
+  const c = getCause();
+  return `
+    ${contextBar()}
+    <div>
+      <h1 class="t1">원인을 찾았습니다</h1>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px">
+      <span class="cause-tag">${c.label} · ${c.tag}</span>
+      <h2 class="t2">${c.name}</h2>
+      <p class="t3">${c.description}</p>
+      ${c.priority_note ? `<p style="font-size:var(--t4);color:var(--accent);font-weight:600">${c.priority_note}</p>` : ''}
+    </div>
+    <div style="background:var(--danger-bg);border:1px solid var(--danger);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="color:var(--danger);font-weight:700;flex-shrink:0;font-size:16px">!</span>
+        <div>
+          <p style="margin:0;font-size:var(--t4);font-weight:600;color:var(--danger)">관절이 눈에 띄게 부어있어요</p>
+          <p style="margin:3px 0 0;font-size:var(--t4);color:var(--text-sub)">운동 후뿐 아니라 지금도 부어있는 경우</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="color:var(--danger);font-weight:700;flex-shrink:0;font-size:16px">!</span>
+        <div>
+          <p style="margin:0;font-size:var(--t4);font-weight:600;color:var(--danger)">만지면 열감이 느껴져요</p>
+          <p style="margin:3px 0 0;font-size:var(--t4);color:var(--text-sub)">다른 쪽 관절과 비교했을 때 확실히 따뜻함</p>
+        </div>
+      </div>
+      <p style="margin:4px 0 0;font-size:var(--t4);color:var(--danger);font-weight:600">위 항목에 해당된다면 재활 전 전문의 진단을 먼저 받으세요.</p>
+    </div>
+    <p style="font-size:var(--t4);color:var(--text-sub);text-align:center;padding:0 4px">이 앱은 재활 보조 도구이며 전문가 진단을 대체하지 않습니다</p>
+    <button class="btn-primary" onclick="saveRehabRecord();go('route')">재활 루트 보기</button>`;
+}
+
+function route() {
+  const c  = getCause();
+  const mv = getMovement();
+  const ps = getPainSite();
+  const stages = c.route.stages;
+  const stage  = stages[S.stageIndex];
+  const isLast = S.stageIndex === stages.length - 1;
+
+  const stageIndicator = stages.map((st, i) => {
+    const cls = i < S.stageIndex ? 'done' : i === S.stageIndex ? 'active' : '';
+    const clickable = i <= S.stageIndex;
+    return clickable
+      ? `<button class="stage-item ${cls}" onclick="jumpToStage(${i})" style="cursor:pointer;font-family:inherit">${i + 1} ${st.name}</button>`
+      : `<div class="stage-item ${cls}">${i + 1} ${st.name}</div>`;
+  }).join('');
+
+  let stageContent;
+  if (stage.type === 'reassessment') {
+    const items = (stage.checklist || []).map(item => `
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="color:var(--accent);font-size:18px">✓</span>
+        <span style="font-size:var(--t3)">${item}</span>
+      </div>`).join('');
+    stageContent = `
+    <div class="card">
+      <p style="font-size:var(--t3);font-weight:600;margin-bottom:12px">다음 3가지를 모두 확인하세요</p>
+      ${items}
+      <div style="margin-top:12px;padding:10px;background:var(--bg);border-radius:8px">
+        <p style="margin:0;font-size:var(--t4);color:var(--accent)">✓ ${stage.pass_note}</p>
+        <p style="margin:4px 0 0;font-size:var(--t4);color:var(--danger)">✗ ${stage.fail_note}</p>
+      </div>
+    </div>`;
+  } else if (stage.type === 'tips') {
+    stageContent = (stage.tips || []).map(tip => `
+    <div class="card" style="display:flex;flex-direction:column;gap:6px">
+      <p style="margin:0;font-size:var(--t3);font-weight:600">${tip.title}</p>
+      <p style="margin:0;font-size:var(--t4);color:var(--text-sub);line-height:1.6">${tip.body}</p>
+    </div>`).join('');
+  } else {
+    stageContent = (stage.exercises || []).map((ex, exIdx) => {
+      const howSteps = (ex.how || []).map((s, i) => `
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-top:4px">
+          <span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span>
+          <span style="font-size:var(--t4);line-height:1.6;color:var(--text)">${s}</span>
+        </div>`).join('');
+      return `
+      <div class="exercise-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <h3 style="margin:0">${ex.name}</h3>
+          <button onclick="openVideoModal('${ex.video_url||''}')" style="flex-shrink:0;background:var(--navy);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:var(--t4);font-weight:600;cursor:pointer">▶ 영상</button>
+        </div>
+        <span class="sets-text">${ex.sets}</span>
+        <details style="margin-top:8px" ${exIdx === 0 ? 'open' : ''}>
+          <summary style="list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+            border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+            <span style="font-size:var(--t4);font-weight:600;color:var(--text-sub)">방법</span>
+            <i class="ti ti-chevron-down how-chevron" style="font-size:14px;color:var(--text-sub)"></i>
+          </summary>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+            ${howSteps}
+          </div>
+          ${ex.cue ? `<div class="cue-text" style="margin-top:8px">● ${ex.cue}</div>` : ''}
+        </details>
+        <details style="margin-top:6px">
+          <summary style="font-size:var(--t4);color:var(--text-sub);cursor:pointer;list-style:none">▸ 왜 이 운동인가</summary>
+          <p class="why-text" style="margin-top:6px">${ex.why}</p>
+        </details>
+      </div>`;
+    }).join('');
+  }
+
+  return `
+    ${contextBar()}
+    <div>
+      <h1 class="t1">${c.label} · ${mv.name} ${ps.name}</h1>
+      <p class="t3" style="margin-top:6px">${c.name}</p>
+    </div>
+    <div>
+      <p class="t4" style="margin-bottom:8px;font-weight:600">현재 단계</p>
+      <div class="stage-wrap">${stageIndicator}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 0">
+      <span style="font-size:var(--t2);font-weight:var(--w2)">${stage.name} 단계</span>
+    </div>
+    ${stageContent}
+    <button class="btn-primary" onclick="${isLast ? "go('complete')" : 'nextStage()'}">
+      ${isLast ? '루트 완료' : '이 단계 완료'}
+    </button>`;
+}
+
+function coming_soon() {
+  const name = DATA ? DATA.name : '이 동작';
+  return `
+    <div style="text-align:center;padding:40px 0">
+      <div style="font-size:48px;margin-bottom:16px">🛠️</div>
+      <h1 class="t1">${name} 콘텐츠<br>준비 중입니다</h1>
+      <p class="t3" style="margin-top:12px;color:var(--text-sub)">현재 스쿼트 콘텐츠를 먼저 이용해 보세요.<br>런지·데드리프트는 곧 업데이트됩니다.</p>
+    </div>
+    <button class="btn-primary" onclick="go('movement')">다른 동작 선택</button>`;
+}
+
+function danger() {
+  let title, reason, action;
+  if (S.isRedFlagDanger) {
+    title  = '지금 바로 운동을 멈추세요';
+    reason = '선택하신 증상은 자가 재활 전 전문의 진단이 필요한 신호입니다. 부기·열감·야간 통증·관절 잠김·외상 후 통증은 연골, 인대, 골 손상을 동반할 수 있어 재활 운동을 먼저 진행하면 증상이 악화될 수 있습니다.';
+    action = '정형외과 또는 스포츠의학과를 방문하세요. 증상 발생 시점, 부위, 해당 동작을 메모해 가면 진단에 도움이 됩니다.';
+  } else {
+    const d = getPainSite().danger;
+    title  = d.title;
+    reason = d.reason;
+    action = d.action;
+  }
+  return `
+    <div style="background:var(--danger-bg);margin:-24px -20px 0;padding:24px 20px;flex:none">
+      <h1 class="t1" style="color:var(--danger)">${title}</h1>
+    </div>
+    <div class="danger-alert">
+      <h2>병원 진료가 필요합니다</h2>
+      <p>${reason}</p>
+      <p style="font-size:var(--t4);color:var(--text-sub)">${action}</p>
+    </div>
+    <div class="card" style="text-align:center;display:flex;flex-direction:column;gap:6px">
+      <p style="font-size:var(--t3);color:var(--text-sub)">증상이 안정되고 <b>안정 시 통증이 없어지면</b> 앱으로 돌아와 다시 감별해보세요.</p>
+      <p style="font-size:var(--t4);color:var(--text-sub)">재활 루트는 전문가 진료 후 병행할 수 있습니다.</p>
+    </div>
+    <button class="btn-danger" onclick="reset()">처음으로 돌아가기</button>`;
+}
+
+function complete() {
+  const c = getCause();
+  const stages = c.route.stages;
+  const isAllDone = S.stageIndex >= stages.length - 1;
+
+  const stageIndicator = stages.map((st, i) => {
+    const cls = i <= S.stageIndex ? 'done' : i === S.stageIndex + 1 ? 'active' : '';
+    const clickable = i <= S.stageIndex;
+    return clickable
+      ? `<button class="stage-item ${cls}" onclick="jumpToStage(${i})" style="cursor:pointer;font-family:inherit">${i + 1} ${st.name}</button>`
+      : `<div class="stage-item ${cls}">${i + 1} ${st.name}</div>`;
+  }).join('');
+
+  const nextStage = stages[S.stageIndex + 1];
+  return `
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px">
+      <div class="complete-wrap">
+        <div class="complete-icon">✓</div>
+        <h1 class="t1">${S.stageIndex + 1}단계 완료!</h1>
+        <p class="t3" style="margin-top:8px">
+          ${isAllDone
+            ? '모든 단계를 마쳤습니다. 꾸준히 유지하세요.'
+            : `${stages[S.stageIndex].name} 단계를 마쳤습니다.`}
+        </p>
+      </div>
+      <div class="stage-wrap" style="justify-content:center">${stageIndicator}</div>
+      ${nextStage ? `
+        <div class="card" style="display:flex;flex-direction:column;gap:6px">
+          <p class="t4" style="text-align:center">다음 단계</p>
+          <p class="t2" style="text-align:center">${S.stageIndex + 2}단계 · ${nextStage.name}</p>
+        </div>` : ''}
+    </div>
+    ${nextStage
+      ? `<button class="btn-primary" onclick="goNextStageFromComplete()">다음 단계 시작</button>
+         <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="go('route')">이 단계 운동 다시 보기</button>`
+      : ''}
+    <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="reset()">처음으로 돌아가기</button>`;
+}
+
+/* ── 액션 ── */
+const BACK_MAP = {
+  pain_site: 'home', movement: 'pain_site',
+  question: 'movement', test: 'question',
+  cause: null, // dynamic: test or question
+  route: 'cause', complete: 'route', danger: 'home', coming_soon: 'movement'
+};
+function goBack() {
+  let dest = BACK_MAP[S.screen];
+  if (S.screen === 'cause') dest = S.testId ? 'test' : 'question';
+  if (dest) go(dest);
+}
+
+function openVideoModal(url) {
+  const videoId = url.match(/(?:youtu\.be\/|v=)([^&?\/]+)/)?.[1];
+  const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : url;
+  document.getElementById('video-iframe').src = embedUrl;
+  const modal = document.getElementById('video-modal');
+  modal.style.display = 'flex';
+}
+function closeVideoModal() {
+  document.getElementById('video-iframe').src = '';
+  document.getElementById('video-modal').style.display = 'none';
+}
+
+function go(screen) {
+  S.screen = screen;
+  saveProgress();
+  render();
+}
+
+function selectPainSite(id) {
+  S.painSiteId   = id;
+  S.movementId   = null;
+  S.questionId   = null;
+  S.causeId      = null;
+  S.stageIndex   = 0;
+  S.questionDepth = 0;
+  go('movement');
+}
+
+
+async function selectMovement(id) {
+  try { DATA = await fetch(`data/movements/${id}.json`).then(r => r.json()); }
+  catch(e) { showToast('데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'); return; }
+  S.movementId   = id;
+  if (DATA.coming_soon) { go('coming_soon'); return; }
+  const site = getPainSite();
+  if (site && site.coming_soon) { go('coming_soon'); return; }
+  S.questionId   = site.entry_question;
+  S.questionDepth = 0;
+  go('question');
+}
+
+
+function selectChoice(next) {
+  S.questionDepth++;
+  if (next === 'danger') {
+    go('danger');
+  } else if (next.startsWith('q:')) {
+    S.questionId = next.slice(2);
+    go('question');
+  } else if (next.startsWith('test:')) {
+    S.testId = next.slice(5);
+    go('test');
+  } else if (next.startsWith('cause:')) {
+    S.causeId = next.slice(6);
+    go('cause');
+  }
+}
+
+function selectTestResult(next) {
+  if (next.startsWith('cause:')) {
+    S.causeId = next.slice(6);
+    go('cause');
+  } else if (next.startsWith('test:')) {
+    S.testId = next.slice(5);
+    go('test');
+  } else if (next === 'danger') {
+    go('danger');
+  }
+}
+
+function nextStage() {
+  go('complete');
+}
+
+function jumpToStage(i) {
+  S.stageIndex = i;
+  go('route');
+}
+
+function goNextStageFromComplete() {
+  S.stageIndex++;
+  saveRehabRecord();
+  go('route');
+}
+
+function reset() {
+  Object.assign(S, {
+    screen: 'home', painSiteId: null, painIntensity: null,
+    movementId: null, questionId: null, testId: null, causeId: null,
+    stageIndex: 0, questionDepth: 0, isRedFlagDanger: false
+  });
+  localStorage.removeItem('rehab_progress');
+  render();
+}
+
+/* ── 시작 ── */
+render();
+init().catch(e => console.error('[init error]', e));
+</script>
+</body>
+</html>
