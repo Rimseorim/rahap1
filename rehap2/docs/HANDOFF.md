@@ -1,39 +1,33 @@
-# HANDOFF - 2026-05-26
+# HANDOFF - 2026-05-26 17:00
 
 ## 완료
-- squat.json cause description 전문용어 제거·평문화 (1a3cc82)
-- squat.json priority_note 전문용어 제거 (fd57dfc 포함)
-- cause tag·name 전문용어 복원 (fd57dfc) — 평문으로 바꿨다가 사용자 지시로 원복
-- test·exercise name 전문용어 복원 (d829100)
-- rehap2 디렉토리 생성 — rehap1 웹 프로젝트 복사 (data/ 텍스트 제외)
-- rehap2 정리 — start.bat, Procfile, rehab.db 삭제 (개발 전용 환경)
+- open.html → open.bat 교체 (file:// 보안 제한으로 meta refresh 차단 문제 해결)
+- open.bat: 01.test에서 python http.server 8080 실행 + 브라우저 자동 오픈
+- 법적 고지 문구 통합 — 각 화면 인라인 제거, 앱 셸 하단 footer 1곳으로 통합
+- test 화면 중복 고지 문구 제거 (868번 라인)
+- 로그아웃 — 텍스트 링크 → 테두리 버튼으로 교체
+- 완료 체크 아이콘 — 이모지 ✓ → SVG로 교체 (#16A34A)
+- CSS 변수 `--navy` → `--dark` 전체 rename (실제 색 #2C2C2C, 이름 불일치 해소)
 
 ## 진행중
-- JSON 콘텐츠 개편 (rehap1) — squat.json 완료, lunge.json 이후 미작업
-  - 중단 지점: rehap1/data/movements/lunge.json
-  - 다음 스텝: lunge.json의 causes[].description, tests[].purpose, exercises[].why 평문화
+- 없음
 
 ## 대기
-- lunge·deadlift·pullup·kipping·press·row JSON description 평문화 (rehap1)
-- 고관절 콘텐츠 (런지·데드리프트·풀업·키핑·로우에 고관절 없음)
+- UI 피드백 추가 반영 예정 (사용자가 추가 항목 있으면 말할 예정)
 - PostgreSQL 전환 (현재 SQLite ephemeral)
 - 네이버 앱 검수 신청
 - 커뮤니티 기능
 - 복합 원인 케이스
-- 재평가 단계 체크박스 인터랙티브화 (현재 정적 텍스트)
+- 재평가 단계 체크박스 인터랙티브화
 
 ## 결정사항 / 주의
-- **명칭 규칙 확정**: name/tag/tests[].name/exercises[].name → 전문용어 유지. description/purpose/why → 전문용어 없이 평문만. 이후 모든 JSON 작업에 적용.
-- **rehap2 용도**: 개발용 복사본. data/ 없음 — index.html의 API는 Railway(프로덕션)로 직접 연결됨.
-- API URL: `https://web-production-28002.up.railway.app`
-- 네이버 콜백 URL: `https://web-production-28002.up.railway.app/auth/naver/callback`
-- 로컬(localhost:8080)에서는 네이버 로그인 불가 — demo 계정으로 테스트 (kim@rehab.com / 1234)
-- 로컬 접근: http.server를 01.test에서 실행 시 `http://localhost:8080/rehap2/index.html`
-- JSON 수정은 Python 스크립트로만 (PowerShell 인코딩 깨짐)
-- 포인트 컬러: --navy #2C2C2C, --accent #4A7FC1
+- **rehap2는 rehap1과 독립 프로젝트** — rehap1 JSON 편집 작업은 rehap1에서 별도 진행
+- **로컬 실행**: open.bat 더블클릭 → 01.test에서 http.server 8080 실행됨
+- **API URL**: `https://web-production-28002.up.railway.app`
+- **네이버 로그인 로컬 불가** — demo 계정: kim@rehab.com / 1234
+- CSS 변수: `--dark` #2C2C2C, `--dark-light` #444444, `--accent` #4A7FC1
 - 동작 ID: squat, lunge, deadlift, pullup, kipping, press-vertical, press-horizontal, row
 - 통증 부위 ID: knee, lower-back, ankle, shoulder, wrist, elbow, hip, chest
-- 재활 루트 3단계: 기초 재활(exercises) · 재평가(type:reassessment, checklist) · 운동 복귀(type:tips, tips[])
 
 ## 다음 세션 권장 첫 프롬프트
-`/resume` 후 "rehap1 lunge.json description·purpose·why 평문화 시작해줘"
+`/resume` 후 추가 UI 피드백 항목 전달
