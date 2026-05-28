@@ -1,33 +1,33 @@
-# HANDOFF - 2026-05-26 17:00
+# HANDOFF - 2026-05-28 14:00
 
 ## 완료
-- open.html → open.bat 교체 (file:// 보안 제한으로 meta refresh 차단 문제 해결)
-- open.bat: 01.test에서 python http.server 8080 실행 + 브라우저 자동 오픈
-- 법적 고지 문구 통합 — 각 화면 인라인 제거, 앱 셸 하단 footer 1곳으로 통합
-- test 화면 중복 고지 문구 제거 (868번 라인)
-- 로그아웃 — 텍스트 링크 → 테두리 버튼으로 교체
-- 완료 체크 아이콘 — 이모지 ✓ → SVG로 교체 (#16A34A)
-- CSS 변수 `--navy` → `--dark` 전체 rename (실제 색 #2C2C2C, 이름 불일치 해소)
+- JSON 데이터 인라인 임베드 → index.html 직접 열기 가능 (서버 불필요) (ed9a793)
+- 테스트 결과 버튼 초록/빨강 → 중립 파란색 통일 (aedce73)
+- 전체 텍스트 색 #2C2C2C 단일화
+- 스크롤 제어 (route/my_records만 허용, 나머지 고정)
+- word-break: keep-all 전역 적용
+- 운동 카드 간격·폰트 가독성 개선 (스텝 번호 색·간격, cue 동그라미 제거)
+- 영상 모달 중앙 재생 아이콘(세모) 추가
+- 로그인 오류 메시지 한국어화
+- 데모 계정 CORS 에러 제거
+- open.bat 삭제
+- btn-primary flex-shrink:0 추가 (버튼 크기 눌림 방지)
 
 ## 진행중
 - 없음
 
 ## 대기
-- UI 피드백 추가 반영 예정 (사용자가 추가 항목 있으면 말할 예정)
-- PostgreSQL 전환 (현재 SQLite ephemeral)
-- 네이버 앱 검수 신청
-- 커뮤니티 기능
-- 복합 원인 케이스
-- 재평가 단계 체크박스 인터랙티브화
+- press-vertical.json elbow coming_soon: true 원복 필요 (테스트용 임시 설정, 배포 전 필수)
+- 홈 화면 비주얼 개선 (보류 중)
+- 실제 운동 영상 URL 데이터 입력 (현재 비어있음)
+- 데이터 입력자에게 전달할 JSON 작성 작업
 
 ## 결정사항 / 주의
-- **rehap2는 rehap1과 독립 프로젝트** — rehap1 JSON 편집 작업은 rehap1에서 별도 진행
-- **로컬 실행**: open.bat 더블클릭 → 01.test에서 http.server 8080 실행됨
-- **API URL**: `https://web-production-28002.up.railway.app`
-- **네이버 로그인 로컬 불가** — demo 계정: kim@rehab.com / 1234
-- CSS 변수: `--dark` #2C2C2C, `--dark-light` #444444, `--accent` #4A7FC1
-- 동작 ID: squat, lunge, deadlift, pullup, kipping, press-vertical, press-horizontal, row
-- 통증 부위 ID: knee, lower-back, ankle, shoulder, wrist, elbow, hip, chest
+- rehap2는 디자인·프론트엔드 전용 (백엔드·배포 작업 없음)
+- 주 색상: 차콜 #2C2C2C + 흰색 + 파란색 #4A7FC1
+- 원격 저장소: github.com/Rimseorim/health (push 아직 안 함)
+- index.html에 JSON 데이터 인라인 삽입되어 있어 파일 크기 큼 (~300KB)
+- 데이터 변경 시 index.html 재생성 필요
 
 ## 다음 세션 권장 첫 프롬프트
-`/resume` 후 추가 UI 피드백 항목 전달
+/resume
