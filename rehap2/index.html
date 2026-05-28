@@ -78,6 +78,16 @@
       transition: background 0.15s; margin-top: auto;
     }
     .btn-primary:hover { background: var(--dark-light); }
+    .spinner-overlay {
+      position: fixed; inset: 0; background: rgba(255,255,255,0.7);
+      display: flex; align-items: center; justify-content: center; z-index: 999;
+    }
+    .spinner {
+      width: 36px; height: 36px; border: 3px solid var(--border);
+      border-top-color: var(--dark); border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .btn-back-circle {
       width: 38px; height: 38px; flex-shrink: 0;
       background: var(--card); border: 1.5px solid var(--border);
@@ -96,7 +106,7 @@
     .stage-wrap { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
     .stage-item {
       flex-shrink: 0; padding: 5px 12px; border-radius: 99px;
-      font-size: var(--t4); font-weight: 600;
+      font-size: var(--t4); font-weight: 600; white-space: nowrap;
       border: 1.5px solid var(--border); color: var(--text-sub); background: var(--card);
     }
     .stage-item.active { background: var(--dark); color: white; border-color: var(--dark); }
@@ -116,9 +126,10 @@
 
     /* Cause Tag */
     .cause-tag {
-      display: inline-block; background: var(--choice-sel); color: var(--dark-light);
+      display: inline-block; background: var(--choice-sel); color: var(--dark);
       border-radius: 6px; padding: 4px 10px;
-      font-size: var(--t4); font-weight: 600;
+      font-size: var(--t4); font-weight: 700;
+      border: 1.5px solid var(--accent);
     }
 
     /* Danger */
@@ -250,6 +261,7 @@ const S = {
   testId: null,
   causeId: null,
   stageIndex: 0,
+  checkedItems: [],
   questionDepth: 0,
   isRedFlagDanger: false,
 };
@@ -770,7 +782,7 @@ function pain_site() {
   return `
     <div>
       <h1 class="t1">어디가 아픈가요?</h1>
-      <p class="t3" style="margin-top:8px">가장 통증이 심한 부위 하나를 선택하세요.</p>
+      <p class="t3" style="margin-top:8px">가장 통증이 심한 부위를 선택하세요.</p>
     </div>
     <div class="choices">${btns}</div>`;
 }
@@ -856,12 +868,10 @@ function test() {
     </div>
     <p class="t4" style="text-align:center;font-weight:600">결과를 선택하세요</p>
     <div class="choices">
-      <button class="choice-btn" style="border-color:var(--success);color:var(--success)" onclick="selectTestResult('${t.pass_next}')">
-        <span style="font-size:18px">✓</span>
+      <button class="choice-btn" onclick="selectTestResult('${t.pass_next}')">
         <span>${t.pass_text}</span>
       </button>
-      <button class="choice-btn" style="border-color:var(--danger);color:var(--danger)" onclick="selectTestResult('${t.fail_next}')">
-        <span style="font-size:18px">✗</span>
+      <button class="choice-btn" onclick="selectTestResult('${t.fail_next}')">
         <span>${t.fail_text}</span>
       </button>
     </div>
@@ -919,20 +929,30 @@ function route() {
 
   let stageContent;
   if (stage.type === 'reassessment') {
-    const items = (stage.checklist || []).map(item => `
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)">
-        <span style="color:var(--accent);font-size:18px">✓</span>
-        <span style="font-size:var(--t3)">${item}</span>
-      </div>`).join('');
+    const checklist = stage.checklist || [];
+    const items = checklist.map((item, i) => {
+      const checked = S.checkedItems.includes(i);
+      return `
+      <div onclick="toggleCheck(${i})" style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer">
+        <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid ${checked ? 'var(--success)' : 'var(--border)'};background:${checked ? 'var(--success)' : 'transparent'};display:flex;align-items:center;justify-content:center">
+          ${checked ? `<svg width="12" height="12" viewBox="0 0 36 36" fill="none"><path d="M8 18L15 25L28 11" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
+        </span>
+        <span style="font-size:var(--t3);color:${checked ? 'var(--text-sub)' : 'var(--text)'}">${item}</span>
+      </div>`;
+    }).join('');
+    const allChecked = S.checkedItems.length === checklist.length;
     stageContent = `
     <div class="card">
-      <p style="font-size:var(--t3);font-weight:600;margin-bottom:12px">다음 3가지를 모두 확인하세요</p>
+      <p style="font-size:var(--t3);font-weight:600;margin-bottom:4px">다음 ${checklist.length}가지를 모두 확인하세요</p>
       ${items}
       <div style="margin-top:12px;padding:10px;background:var(--bg);border-radius:8px">
         <p style="margin:0;font-size:var(--t4);color:var(--accent)">✓ ${stage.pass_note}</p>
         <p style="margin:4px 0 0;font-size:var(--t4);color:var(--danger)">✗ ${stage.fail_note}</p>
       </div>
-    </div>`;
+    </div>
+    <button class="btn-primary" onclick="${isLast ? "go('complete')" : 'nextStage()'}" ${allChecked ? '' : 'disabled'} style="${allChecked ? '' : 'opacity:0.4;pointer-events:none'}">
+      ${isLast ? '루트 완료' : '이 단계 완료'}
+    </button>`;
   } else if (stage.type === 'tips') {
     stageContent = (stage.tips || []).map(tip => `
     <div class="card" style="display:flex;flex-direction:column;gap:6px">
@@ -986,18 +1006,18 @@ function route() {
       <span style="font-size:var(--t2);font-weight:var(--w2)">${stage.name} 단계</span>
     </div>
     ${stageContent}
-    <button class="btn-primary" onclick="${isLast ? "go('complete')" : 'nextStage()'}">
+    ${stage.type === 'reassessment' ? '' : `<button class="btn-primary" onclick="${isLast ? "go('complete')" : 'nextStage()'}">
       ${isLast ? '루트 완료' : '이 단계 완료'}
-    </button>`;
+    </button>`}`;
 }
 
 function coming_soon() {
-  const name = DATA ? DATA.name : '이 동작';
+  const moveName = DATA ? DATA.name : '이 동작';
+  const siteName = S.painSiteId ? (ALL_PAIN_NAMES[S.painSiteId] || S.painSiteId) : '';
   return `
     <div style="text-align:center;padding:40px 0">
-      <div style="font-size:48px;margin-bottom:16px">🛠️</div>
-      <h1 class="t1">${name} 콘텐츠<br>준비 중입니다</h1>
-      <p class="t3" style="margin-top:12px;color:var(--text-sub)">현재 스쿼트 콘텐츠를 먼저 이용해 보세요.<br>런지·데드리프트는 곧 업데이트됩니다.</p>
+      <h1 class="t1">${moveName} · ${siteName}<br>콘텐츠 준비 중입니다</h1>
+      <p class="t3" style="margin-top:12px;color:var(--text-sub)">해당 콘텐츠는 곧 업데이트됩니다.<br>다른 동작을 먼저 이용해 보세요.</p>
     </div>
     <button class="btn-primary" onclick="go('movement')">다른 동작 선택</button>`;
 }
@@ -1077,7 +1097,7 @@ function complete() {
 const BACK_MAP = {
   pain_site: 'home', movement: 'pain_site',
   question: 'movement', test: 'question',
-  cause: null, // dynamic: test or question
+  cause: null,
   route: 'cause', complete: 'route', danger: 'home', coming_soon: 'movement'
 };
 function goBack() {
@@ -1115,9 +1135,22 @@ function selectPainSite(id) {
 }
 
 
+function showSpinner() {
+  const el = document.createElement('div');
+  el.className = 'spinner-overlay'; el.id = 'spinner';
+  el.innerHTML = '<div class="spinner"></div>';
+  document.body.appendChild(el);
+}
+function hideSpinner() {
+  const el = document.getElementById('spinner');
+  if (el) el.remove();
+}
+
 async function selectMovement(id) {
+  showSpinner();
   try { DATA = await fetch(`data/movements/${id}.json`).then(r => r.json()); }
-  catch(e) { showToast('데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'); return; }
+  catch(e) { hideSpinner(); showToast('데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'); return; }
+  hideSpinner();
   S.movementId   = id;
   if (DATA.coming_soon) { go('coming_soon'); return; }
   const site = getPainSite();
@@ -1140,6 +1173,7 @@ function selectChoice(next) {
     go('test');
   } else if (next.startsWith('cause:')) {
     S.causeId = next.slice(6);
+    S.testId = null;
     go('cause');
   }
 }
@@ -1156,12 +1190,21 @@ function selectTestResult(next) {
   }
 }
 
+function toggleCheck(i) {
+  const idx = S.checkedItems.indexOf(i);
+  if (idx === -1) S.checkedItems.push(i);
+  else S.checkedItems.splice(idx, 1);
+  render();
+}
+
 function nextStage() {
+  S.checkedItems = [];
   go('complete');
 }
 
 function jumpToStage(i) {
   S.stageIndex = i;
+  S.checkedItems = [];
   go('route');
 }
 
@@ -1175,7 +1218,7 @@ function reset() {
   Object.assign(S, {
     screen: 'home', painSiteId: null, painIntensity: null,
     movementId: null, questionId: null, testId: null, causeId: null,
-    stageIndex: 0, questionDepth: 0, isRedFlagDanger: false
+    stageIndex: 0, checkedItems: [], questionDepth: 0, isRedFlagDanger: false
   });
   localStorage.removeItem('rehab_progress');
   render();
