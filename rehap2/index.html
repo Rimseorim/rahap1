@@ -171,10 +171,6 @@
       display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;
       animation: pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
-    .app-footer {
-      text-align: center; font-size: 12px; color: var(--text-sub);
-      padding: 12px 0 20px; line-height: 1.5;
-    }
     .complete-wrap { text-align: center; padding: 12px 0; animation: fade-up 0.4s 0.2s ease both; }
 
     /* Password toggle */
@@ -218,10 +214,36 @@
     <div class="progress-track"><div class="progress-fill" id="pb-fill"></div></div>
   </div>
   <div class="screen" id="main-screen"></div>
-  <div class="app-footer">이 앱은 재활 보조 도구이며 전문가 진단을 대체하지 않습니다</div>
+
 </div>
 
 <div id="toast"></div>
+
+<!-- 스플래시 스크린 -->
+<style>
+  @keyframes splash-logo {
+    0%   { opacity:0; transform: translateY(16px) scale(0.92); }
+    100% { opacity:1; transform: translateY(0) scale(1); }
+  }
+  @keyframes splash-sub {
+    0%   { opacity:0; }
+    100% { opacity:0.5; }
+  }
+  @keyframes splash-bar {
+    0%   { width:0; }
+    100% { width:100%; }
+  }
+  #splash-logo { animation: splash-logo 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
+  #splash-sub  { animation: splash-sub 0.5s ease 0.6s both; }
+  #splash-bar  { animation: splash-bar 1.4s cubic-bezier(0.4,0,0.2,1) 0.5s both; }
+</style>
+<div id="splash" style="position:fixed;inset:0;background:#2C2C2C;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity 0.5s ease">
+  <div id="splash-logo" style="font-size:40px;font-weight:800;color:#fff;letter-spacing:-1px">LogFit</div>
+  <div id="splash-sub" style="font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:2px">로그핏</div>
+  <div style="width:48px;height:2px;background:rgba(255,255,255,0.15);border-radius:2px;margin-top:8px;overflow:hidden">
+    <div id="splash-bar" style="height:100%;background:#4A7FC1;border-radius:2px"></div>
+  </div>
+</div>
 
 <!-- 영상 모달 -->
 <div id="video-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;padding:20px">
@@ -384,6 +406,8 @@ async function doSignup(e) {
 
 function logout() { clearUser(); render(); }
 function naverLogin() { window.location.href = `${API}/auth/naver/login`; }
+function kakaoLogin() { showToast('카카오 로그인 준비 중입니다.'); }
+function googleLogin() { showToast('구글 로그인 준비 중입니다.'); }
 
 let MY_RECORDS = null;
 
@@ -548,6 +572,11 @@ async function init() {
     }
   }
   render();
+  const splash = document.getElementById('splash');
+  setTimeout(() => {
+    splash.style.opacity = '0';
+    setTimeout(() => splash.style.display = 'none', 400);
+  }, 1500);
 }
 
 
@@ -728,33 +757,28 @@ function home() {
 
 function login() {
   return `
-    <div style="display:flex;align-items:center;justify-content:center;padding-top:40px">
-      <div style="width:100%;max-width:360px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <button onclick="go('landing')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-sub);padding:0">←</button>
-          <h1 style="font-size:var(--t1);font-weight:700;color:var(--dark);margin:0">로그인</h1>
-        </div>
-        <form class="card" style="display:flex;flex-direction:column;gap:12px" onsubmit="doLogin(event)">
-          <input id="inp-email" type="email" placeholder="이메일" required
-            style="padding:12px;border:1px solid var(--border);border-radius:8px;font-size:var(--t3);outline:none">
-          <div class="pwd-wrap">
-            <input id="inp-password" type="password" placeholder="비밀번호" required
-              style="padding:12px;border:1px solid var(--border);border-radius:8px;font-size:var(--t3);outline:none">
-            <button type="button" class="pwd-toggle" onclick="togglePwd('inp-password')"><i class="ti ti-eye"></i></button>
+    <div style="display:flex;align-items:center;justify-content:center;padding-top:80px">
+      <div style="width:100%;max-width:360px;margin:0 auto;display:flex;flex-direction:column;gap:16px;padding:0 24px">
+        <div style="position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:8px">
+          <button onclick="go('landing')" style="position:absolute;left:0;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-sub);padding:0">←</button>
+          <div style="text-align:center">
+            <h1 style="font-size:var(--t1);font-weight:700;color:var(--dark);margin:0">로그인</h1>
+            <p style="font-size:var(--t3);color:var(--text-sub);margin:4px 0 0">간편 로그인</p>
           </div>
-          <p id="auth-error" style="color:var(--danger);font-size:var(--t4);margin:0"></p>
-          <button type="submit" class="btn-primary">로그인</button>
-        </form>
-        <button class="btn-primary" style="background:var(--dark-light)" onclick="go('signup')">회원가입</button>
-        <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-          <span style="font-size:var(--t4);color:var(--text-sub)">또는</span>
-          <div style="flex:1;height:1px;background:var(--border)"></div>
         </div>
-        <button class="btn-primary" style="background:#03C75A;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;height:60px;font-size:var(--t2)" onclick="naverLogin()">
+        <button style="background:#FEE500;color:#000;border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:10px;height:60px;font-size:var(--t2);font-weight:600;cursor:pointer;width:100%" onclick="kakaoLogin()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.73 1.61 5.13 4.03 6.57l-1.03 3.8 4.41-2.91A11.3 11.3 0 0 0 12 18.6c5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/></svg>
+          카카오로 로그인
+        </button>
+        <button style="background:#03C75A;color:#fff;border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:10px;height:60px;font-size:var(--t2);font-weight:600;cursor:pointer;width:100%" onclick="naverLogin()">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
           네이버로 로그인
         </button>
+        <button style="background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:10px;height:60px;font-size:var(--t2);font-weight:600;cursor:pointer;width:100%" onclick="googleLogin()">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          구글로 로그인
+        </button>
+        <p style="font-size:var(--t4);color:var(--text-sub);text-align:center;margin:4px 0 0">로그인 시 이용약관 및 개인정보처리방침에 동의합니다</p>
       </div>
     </div>
 `;
