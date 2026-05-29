@@ -244,6 +244,11 @@
     <div id="splash-bar" style="height:100%;background:#4A7FC1;border-radius:2px"></div>
   </div>
 </div>
+<script>
+  if (new URLSearchParams(location.search).get('naver_token')) {
+    document.getElementById('splash').style.display = 'none';
+  }
+</script>
 
 <!-- 영상 모달 -->
 <div id="video-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;padding:20px">
