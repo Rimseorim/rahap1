@@ -1,33 +1,31 @@
-# HANDOFF - 2026-05-28 14:00
+# HANDOFF - 2026-05-29 15:30
 
 ## 완료
-- JSON 데이터 인라인 임베드 → index.html 직접 열기 가능 (서버 불필요) (ed9a793)
-- 테스트 결과 버튼 초록/빨강 → 중립 파란색 통일 (aedce73)
-- 전체 텍스트 색 #2C2C2C 단일화
-- 스크롤 제어 (route/my_records만 허용, 나머지 고정)
-- word-break: keep-all 전역 적용
-- 운동 카드 간격·폰트 가독성 개선 (스텝 번호 색·간격, cue 동그라미 제거)
-- 영상 모달 중앙 재생 아이콘(세모) 추가
-- 로그인 오류 메시지 한국어화
-- 데모 계정 CORS 에러 제거
-- open.bat 삭제
-- btn-primary flex-shrink:0 추가 (버튼 크기 눌림 방지)
+- 로그인 화면 소셜 전환: 이메일/비밀번호 제거 → 카카오·네이버·구글 버튼만 (479a38b)
+- 로그인 타이틀 가운데 정렬 + "간편 로그인" 서브텍스트 추가
+- 로그인 하단 이용약관 동의 문구 추가
+- 앱 하단 면책 문구("재활 보조 도구") 제거
+- 스플래시 스크린 추가: LogFit/로그핏 + 로딩바 애니메이션 1.5s (479a38b)
+- rehap2 → rehap1 coming_soon 전부 제거 후 덮어쓰기
+- 앱 이름 LogFit(로그핏)으로 결정
 
 ## 진행중
 - 없음
 
 ## 대기
-- press-vertical.json elbow coming_soon: true 원복 필요 (테스트용 임시 설정, 배포 전 필수)
-- 홈 화면 비주얼 개선 (보류 중)
-- 실제 운동 영상 URL 데이터 입력 (현재 비어있음)
-- 데이터 입력자에게 전달할 JSON 작성 작업
+- 하단 탭바 (기록·재활·추이) — 한 번 작업했다가 롤백, 재설계 필요
+- 홈화면 설계 — 탭바 방향 정해진 후 진행
+- 카카오·구글 OAuth 백엔드 연동 (현재 "준비 중" 토스트)
+- press-vertical.json elbow coming_soon 원복 여부 확인 (rehap2 데이터)
+- 실제 운동 영상 URL 데이터 입력
 
 ## 결정사항 / 주의
-- rehap2는 디자인·프론트엔드 전용 (백엔드·배포 작업 없음)
+- 앱 이름: LogFit (로그핏) — 크로스핏 한정 아닌 운동 전반 타겟
+- rehap2: 디자인·프론트엔드 전용 (로컬 파일, 배포 없음)
+- rehap1: GitHub Pages(rimseorim.github.io/rehap1) + Railway 배포 중
+- 네이버 OAuth FRONTEND_URL = https://rimseorim.github.io/rehap1
+- 하단 탭바는 사진 레퍼런스 기반으로 재설계 예정 (기록·재활·추이)
 - 주 색상: 차콜 #2C2C2C + 흰색 + 파란색 #4A7FC1
-- 원격 저장소: github.com/Rimseorim/health (push 아직 안 함)
-- index.html에 JSON 데이터 인라인 삽입되어 있어 파일 크기 큼 (~300KB)
-- 데이터 변경 시 index.html 재생성 필요
 
 ## 다음 세션 권장 첫 프롬프트
-/resume
+`/resume`
