@@ -50,7 +50,8 @@
 
     /* Screen */
     .screen { flex: 1; padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 14px; overflow-y: hidden; min-height: 0; }
-    .screen.scrollable { overflow-y: auto; }
+    .screen.scrollable { overflow-y: auto; scrollbar-width: none; }
+    .screen.scrollable::-webkit-scrollbar { display: none; }
 
     /* Typography helpers */
     .t1 { font-size: var(--t1); font-weight: var(--w1); line-height: 1.4; }
@@ -198,6 +199,61 @@
     /* 아코디언 화살표 회전 */
     details .how-chevron { transition: transform 0.2s ease; }
     details[open] .how-chevron { transform: rotate(180deg); }
+
+    /* ── 기록 탭: 달력 ── */
+    .lf-cal-nav { display:flex;align-items:center;justify-content:space-between;margin-bottom:12px; }
+    .lf-cal-nav h2 { font-size:16px;font-weight:700;color:var(--dark); }
+    .lf-cal-nav button { background:none;border:1px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:18px;color:var(--text-sub); }
+    .lf-cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px; }
+    .lf-cal-dow { text-align:center;font-size:11px;color:var(--text-sub);padding:4px 0;font-weight:600; }
+    .lf-cal-dow:first-child { color:#e05050; }
+    .lf-cal-dow:last-child { color:var(--accent); }
+    .lf-cal-day { text-align:center;padding:2px 0 4px;border-radius:8px;cursor:pointer;font-size:13px;min-height:40px;display:flex;flex-direction:column;align-items:center;gap:2px; }
+    .lf-cal-day:hover { background:var(--bg); }
+    .lf-cal-day.empty { cursor:default;pointer-events:none; }
+    .lf-cal-day.today .lf-day-num { background:var(--dark);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center; }
+    .lf-cal-day.selected:not(.today) .lf-day-num { background:var(--accent);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center; }
+    .lf-cal-day.sunday { color:#e05050; }
+    .lf-cal-day.saturday { color:var(--accent); }
+    .lf-dots { display:flex;gap:2px;justify-content:center; }
+    .lf-dot { width:5px;height:5px;border-radius:50%; }
+    .lf-dot.running { background:var(--accent); }
+    .lf-dot.crossfit { background:var(--dark); }
+    .lf-legend { display:flex;gap:12px;font-size:11px;color:var(--text-sub);margin-bottom:12px; }
+    .lf-legend-item { display:flex;align-items:center;gap:4px; }
+
+    /* ── 기록 탭: 로그 아이템 ── */
+    .lf-log-item { background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border-left:3px solid var(--accent);position:relative; }
+    .lf-log-item.crossfit { border-left-color:var(--dark); }
+    .lf-log-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:8px; }
+    .lf-badge { font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px; }
+    .lf-badge.running { background:rgba(74,127,193,0.12);color:var(--accent); }
+    .lf-badge.crossfit { background:rgba(44,44,44,0.08);color:var(--dark); }
+    .lf-log-stats { display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-sub);margin-bottom:4px; }
+    .lf-log-stats span { font-weight:700;color:var(--text); }
+    .lf-log-diary { font-size:13px;color:var(--text-sub);margin-top:8px;line-height:1.6; }
+    .lf-wod-content { white-space:pre-wrap;font-size:13px;line-height:1.6;color:var(--text); }
+    .lf-del-btn { background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;padding:0;line-height:1; }
+
+    /* ── 추이 탭 ── */
+    .lf-movement-select { width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;background:#fff;color:var(--text);appearance:none;margin-bottom:12px; }
+    .lf-chart-wrap { background:#fff;border-radius:12px;padding:12px;margin-bottom:12px;overflow:hidden; }
+    .lf-trend-chips { display:flex;gap:8px;margin-bottom:12px; }
+    .lf-trend-chip { flex:1;background:#fff;border-radius:10px;padding:10px 8px;text-align:center;border:1px solid var(--border); }
+    .lf-trend-chip .chip-label { font-size:11px;color:var(--text-sub);margin-bottom:2px; }
+    .lf-trend-chip .chip-value { font-size:17px;font-weight:800;color:var(--dark); }
+
+    /* ── 기록 쓰기 모달 ── */
+    .lf-modal-bg { position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9000;display:flex;align-items:flex-end; }
+    .lf-modal { background:#fff;border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:430px;margin:0 auto;max-height:82vh;overflow-y:auto;box-sizing:border-box; }
+    .lf-modal h3 { font-size:18px;font-weight:800;margin:0 0 16px; }
+    .lf-type-row { display:flex;gap:8px;margin-bottom:16px; }
+    .lf-type-btn { flex:1;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:var(--text-sub); }
+    .lf-type-btn.active { background:var(--dark);color:#fff;border-color:var(--dark); }
+    .lf-input { width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box;margin-bottom:10px;background:#fff; }
+    .lf-textarea { width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;box-sizing:border-box;resize:none;margin-bottom:10px;background:#fff; }
+    .lf-row2 { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+    .lf-label { font-size:12px;font-weight:600;color:var(--text-sub);margin-bottom:4px; }
   </style>
 </head>
 <body>
@@ -208,12 +264,26 @@
       <div style="display:flex;align-items:center;gap:10px">
         <span id="pb-pct"></span>
         <button class="btn-back-circle" id="pb-back" onclick="goBack()">←</button>
-        <button class="btn-back-circle" onclick="go(USER ? 'home' : 'landing')" title="홈">⌂</button>
+        <button class="btn-back-circle" onclick="go(USER ? 'home' : 'login')" title="홈">⌂</button>
       </div>
     </div>
     <div class="progress-track"><div class="progress-fill" id="pb-fill"></div></div>
   </div>
   <div class="screen" id="main-screen"></div>
+  <nav id="tab-bar" style="display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid var(--border);display:flex;z-index:1000">
+    <button onclick="switchTab('diary')"  id="tab-diary"  style="flex:1;border:none;background:none;padding:10px 0 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <i class="ti ti-notebook" style="font-size:22px"></i>
+      <span style="font-size:10px;font-weight:600">기록</span>
+    </button>
+    <button onclick="switchTab('rehab')"  id="tab-rehab"  style="flex:1;border:none;background:none;padding:10px 0 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <i class="ti ti-run" style="font-size:22px"></i>
+      <span style="font-size:10px;font-weight:600">재활</span>
+    </button>
+    <button onclick="switchTab('weight')" id="tab-weight" style="flex:1;border:none;background:none;padding:10px 0 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <i class="ti ti-chart-line" style="font-size:22px"></i>
+      <span style="font-size:10px;font-weight:600">추이</span>
+    </button>
+  </nav>
 
 </div>
 
@@ -244,6 +314,11 @@
     <div id="splash-bar" style="height:100%;background:#4A7FC1;border-radius:2px"></div>
   </div>
 </div>
+<script>
+  if (new URLSearchParams(location.search).get('naver_token')) {
+    document.getElementById('splash').style.display = 'none';
+  }
+</script>
 
 <!-- 영상 모달 -->
 <div id="video-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;padding:20px">
@@ -283,8 +358,57 @@ async function resumeProgress() {
 }
 
 /* ── 상태 ── */
+/* ── 기록/추이 탭 상태 ── */
+(function() {
+  const kst = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' });
+  window.DIARY_TODAY = kst;
+  const d = new Date(kst + 'T00:00:00+09:00');
+  window.DIARY_VIEW_YEAR = d.getFullYear();
+  window.DIARY_VIEW_MONTH = d.getMonth();
+  window.DIARY_SELECTED = null;
+  window.DIARY_WRITE_TYPE = 'running';
+})();
+
+/* ── 기록/추이 유틸 ── */
+function lfEscape(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function lfGetLogs() { try { return JSON.parse(localStorage.getItem('sportslogs')||'[]'); } catch{return[];} }
+function lfSaveLogs(arr) { localStorage.setItem('sportslogs', JSON.stringify(arr)); }
+function lfFmtDate(s) { if(!s)return''; const [y,m,d]=s.split('-'); return `${m}월 ${d}일`; }
+function lfFmtPace(minPerKm) { const m=Math.floor(minPerKm); const s=Math.round((minPerKm-m)*60); return `${m}'${String(s).padStart(2,'0')}"`; }
+function lfNormMove(n) { return (n||'').trim().toLowerCase().replace(/\s+/g,' '); }
+function lfToKg(w,u) { return (u==='lbs'||u==='lb')? w*0.453592 : w; }
+function lfParseWeights(text) {
+  if(!text) return [];
+  const res=[]; const seen=new Set();
+  const pats=[{re:/([가-힣a-zA-Z][가-힣a-zA-Z \t&\-]*?)\s+(\d+(?:\.\d+)?)\s*kg\b/gi,u:'kg'},{re:/([가-힣a-zA-Z][가-힣a-zA-Z \t&\-]*?)\s+(\d+(?:\.\d+)?)\s*lbs?\b/gi,u:'lbs'}];
+  for(const {re,u} of pats){ let m; while((m=re.exec(text))!==null){ const mv=m[1].trim().replace(/\s+/g,' '); const w=parseFloat(m[2]); const k=lfNormMove(mv); if(mv&&!isNaN(w)&&/[a-zA-Z가-힣]/.test(mv)&&!seen.has(k)){seen.add(k);res.push({movement:mv,weight:w,unit:u});}}}
+  return res;
+}
+function lfAllMovements() {
+  const logs=lfGetLogs().filter(l=>l.type==='crossfit');
+  const set=new Set();
+  logs.forEach(log=>(log.wods||[]).forEach(wod=>{
+    (wod.weights||[]).filter(w=>w.movement).forEach(w=>set.add(w.movement.trim()));
+    if(!(wod.weights||[]).some(w=>w.movement)) lfParseWeights(wod.content).forEach(w=>set.add(w.movement));
+  }));
+  return [...set].sort((a,b)=>a.localeCompare(b,'ko'));
+}
+function lfMoveData(mv) {
+  const k=lfNormMove(mv);
+  return lfGetLogs().filter(l=>l.type==='crossfit').sort((a,b)=>a.date.localeCompare(b.date)).flatMap(log=>{
+    const rows=[];
+    (log.wods||[]).forEach(wod=>{
+      const ex=(wod.weights||[]).filter(w=>lfNormMove(w.movement)===k&&w.weight!=null);
+      if(ex.length){ ex.forEach(w=>rows.push({date:log.date,weight:Math.round(lfToKg(parseFloat(w.weight),w.unit||'kg')*10)/10,origWeight:w.weight,origUnit:w.unit||'kg',parsed:false})); }
+      else { lfParseWeights(wod.content).filter(w=>lfNormMove(w.movement)===k).forEach(w=>rows.push({date:log.date,weight:Math.round(lfToKg(w.weight,w.unit)*10)/10,origWeight:w.weight,origUnit:w.unit,parsed:true})); }
+    });
+    return rows;
+  });
+}
+
 const S = {
   screen: 'home',
+  tab: 'diary',
   painSiteId: null,
   painIntensity: null,
   movementId: null,
@@ -547,6 +671,14 @@ async function init() {
     history.replaceState({}, '', location.pathname);
   }
 
+  const splash = document.getElementById('splash');
+  if (splash.style.display !== 'none') {
+    setTimeout(() => {
+      splash.style.opacity = '0';
+      setTimeout(() => splash.style.display = 'none', 400);
+    }, 1500);
+  }
+
   MANIFEST = BUNDLED['manifest'];
   if (USER && USER.token !== 'demo') {
     try {
@@ -572,11 +704,6 @@ async function init() {
     }
   }
   render();
-  const splash = document.getElementById('splash');
-  setTimeout(() => {
-    splash.style.opacity = '0';
-    setTimeout(() => splash.style.display = 'none', 400);
-  }, 1500);
 }
 
 
@@ -638,9 +765,9 @@ function updateProgress(screen) {
 
 /* ── 렌더 ── */
 function render() {
-  const publicScreens = ['landing', 'login', 'signup'];
+  const publicScreens = ['login', 'signup'];
   if (!USER && !publicScreens.includes(S.screen)) {
-    S.screen = 'landing';
+    S.screen = 'login';
   }
   updateProgress(S.screen);
   window.scrollTo(0, 0);
@@ -648,8 +775,19 @@ function render() {
   else releaseWakeLock();
   const screens = { landing, home, login, signup, my_records, pain_site, movement, question, test, cause, route, danger, complete, coming_soon };
   el('main-screen').innerHTML = (screens[S.screen] || landing)();
-  const scrollableScreens = ['route', 'my_records'];
+  const scrollableScreens = ['route', 'my_records', 'home'];
   el('main-screen').classList.toggle('scrollable', scrollableScreens.includes(S.screen));
+  const tabBar = el('tab-bar');
+  if (S.screen === 'home') {
+    tabBar.style.display = 'flex';
+    ['diary','rehab','weight'].forEach(t => {
+      const btn = el('tab-' + t);
+      const active = t === S.tab;
+      btn.style.color = active ? 'var(--accent)' : 'var(--text-sub)';
+    });
+  } else {
+    tabBar.style.display = 'none';
+  }
 }
 
 /* ── 화면별 HTML 생성 ── */
@@ -688,6 +826,212 @@ function landing() {
     <button class="btn-primary" style="font-size:var(--t2);padding:16px" onclick="go('login')">시작하기</button>
 
     `;
+}
+
+/* ── 달력 ── */
+function lfCalendarHtml() {
+  const logs=lfGetLogs(); const dayMap={};
+  logs.forEach(l=>{ if(!dayMap[l.date])dayMap[l.date]=new Set(); dayMap[l.date].add(l.type); });
+  const y=DIARY_VIEW_YEAR, m=DIARY_VIEW_MONTH;
+  const dows=['일','월','화','수','목','금','토'];
+  let html=dows.map(d=>`<div class="lf-cal-dow">${d}</div>`).join('');
+  const firstDay=new Date(y,m,1).getDay();
+  const lastDate=new Date(y,m+1,0).getDate();
+  for(let i=0;i<firstDay;i++) html+=`<div class="lf-cal-day empty"></div>`;
+  for(let d=1;d<=lastDate;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dow=new Date(y,m,d).getDay();
+    const types=dayMap[ds];
+    let cls='lf-cal-day';
+    if(ds===DIARY_TODAY)cls+=' today';
+    if(ds===DIARY_SELECTED)cls+=' selected';
+    if(dow===0)cls+=' sunday';
+    if(dow===6)cls+=' saturday';
+    const dots=types?`<div class="lf-dots">${[...types].map(t=>`<div class="lf-dot ${t}"></div>`).join('')}</div>`:'';
+    html+=`<div class="${cls}" onclick="lfSelectDate('${ds}')"><div class="lf-day-num">${d}</div>${dots}</div>`;
+  }
+  return `
+    <div class="lf-cal-nav">
+      <button onclick="lfChangeMonth(-1)">&#8249;</button>
+      <h2>${y}년 ${m+1}월</h2>
+      <button onclick="lfChangeMonth(1)">&#8250;</button>
+    </div>
+    <div class="lf-cal-grid">${html}</div>
+    <div class="lf-legend">
+      <div class="lf-legend-item"><div class="lf-dot running"></div>러닝</div>
+      <div class="lf-legend-item"><div class="lf-dot crossfit"></div>크로스핏</div>
+    </div>`;
+}
+function lfChangeMonth(d){ DIARY_VIEW_MONTH+=d; if(DIARY_VIEW_MONTH<0){DIARY_VIEW_MONTH=11;DIARY_VIEW_YEAR--;} if(DIARY_VIEW_MONTH>11){DIARY_VIEW_MONTH=0;DIARY_VIEW_YEAR++;} render(); }
+function lfSelectDate(ds){ DIARY_SELECTED=DIARY_SELECTED===ds?null:ds; render(); }
+
+/* ── 로그 목록 ── */
+function lfLogsHtml() {
+  const date=DIARY_SELECTED||DIARY_TODAY;
+  const logs=lfGetLogs().filter(l=>l.date===date);
+  const label=date===DIARY_TODAY?'오늘':'';
+  if(!logs.length) return `<div style="text-align:center;padding:24px 0;color:var(--text-sub);font-size:13px">${label?'오늘은':'이 날은'} 기록이 없어요</div>`;
+  return logs.map(log=>{
+    if(log.type==='running'){
+      const km=parseFloat(log.distance); const tm=parseFloat(log.time);
+      const pace=(km>0&&tm>0)?lfFmtPace(tm/km):null;
+      const stats=[];
+      if(log.distance)stats.push(`거리 <span>${lfEscape(log.distance)}km</span>`);
+      if(log.time){const mn=Math.floor(tm);const sc=Math.round((tm-mn)*60);stats.push(`시간 <span>${mn}분${sc?sc+'초':''}</span>`);}
+      if(pace)stats.push(`페이스 <span>${pace}/km</span>`);
+      if(log.place)stats.push(`장소 <span>${lfEscape(log.place)}</span>`);
+      return `<div class="lf-log-item">
+        <div class="lf-log-header"><span class="lf-badge running">러닝</span><button class="lf-del-btn" onclick="lfDeleteLog(${log.id})">&times;</button></div>
+        ${stats.length?`<div class="lf-log-stats">${stats.map(s=>`<div>${s}</div>`).join('')}</div>`:''}
+        ${log.diary?`<div class="lf-log-diary">${lfEscape(log.diary).replace(/\n/g,'<br>')}</div>`:''}
+      </div>`;
+    } else {
+      const wods=(log.wods||[]);
+      const wodsHtml=wods.map((w,i)=>`
+        <div style="margin-bottom:8px">
+          ${wods.length>1?`<div style="font-size:11px;font-weight:700;color:var(--text-sub);margin-bottom:4px">WOD ${i+1}</div>`:''}
+          <div class="lf-wod-content">${lfEscape(w.content||'').replace(/\n/g,'<br>')}</div>
+          ${w.record?`<div style="font-size:12px;color:var(--text-sub);margin-top:4px">기록 <span style="font-weight:700;color:var(--text)">${lfEscape(w.record)}</span></div>`:''}
+          ${(w.weights||[]).filter(wt=>wt.movement).map(wt=>`<span style="display:inline-block;background:var(--bg);border-radius:6px;padding:2px 8px;font-size:12px;margin:4px 4px 0 0">${lfEscape(wt.movement)} <strong>${wt.weight}${wt.unit||'kg'}</strong></span>`).join('')}
+        </div>`).join('');
+      return `<div class="lf-log-item crossfit">
+        <div class="lf-log-header"><span class="lf-badge crossfit">크로스핏</span><button class="lf-del-btn" onclick="lfDeleteLog(${log.id})">&times;</button></div>
+        ${log.title?`<div style="font-weight:700;font-size:15px;margin-bottom:8px">${lfEscape(log.title)}</div>`:''}
+        ${wodsHtml}
+        ${log.diary?`<div class="lf-log-diary">${lfEscape(log.diary).replace(/\n/g,'<br>')}</div>`:''}
+      </div>`;
+    }
+  }).join('');
+}
+function lfDeleteLog(id){ if(!confirm('삭제할까요?'))return; lfSaveLogs(lfGetLogs().filter(l=>l.id!==id)); render(); }
+
+/* ── 기록 쓰기 모달 ── */
+function lfOpenWrite(){
+  const date=DIARY_SELECTED||DIARY_TODAY;
+  const bg=document.createElement('div'); bg.className='lf-modal-bg'; bg.id='lf-modal-bg';
+  bg.onclick=e=>{ if(e.target===bg)lfCloseWrite(); };
+  bg.innerHTML=`<div class="lf-modal">
+    <h3>운동 기록</h3>
+    <div class="lf-type-row">
+      <button class="lf-type-btn active" id="lf-tab-run" onclick="lfSwitchWriteType('running')">러닝</button>
+      <button class="lf-type-btn" id="lf-tab-cf" onclick="lfSwitchWriteType('crossfit')">크로스핏</button>
+    </div>
+    <div id="lf-write-body"></div>
+    <button class="btn-primary" style="margin-top:4px" onclick="lfSaveLog()">저장</button>
+    <button onclick="lfCloseWrite()" style="width:100%;background:none;border:none;padding:12px;font-size:14px;color:var(--text-sub);cursor:pointer;margin-top:4px">취소</button>
+  </div>`;
+  document.body.appendChild(bg);
+  DIARY_WRITE_TYPE='running';
+  lfRenderWriteBody(date);
+}
+function lfCloseWrite(){ const bg=document.getElementById('lf-modal-bg'); if(bg)bg.remove(); }
+function lfSwitchWriteType(t){
+  DIARY_WRITE_TYPE=t;
+  document.getElementById('lf-tab-run').classList.toggle('active',t==='running');
+  document.getElementById('lf-tab-cf').classList.toggle('active',t==='crossfit');
+  const date=document.getElementById('lf-date')?.value||DIARY_SELECTED||DIARY_TODAY;
+  lfRenderWriteBody(date);
+}
+function lfRenderWriteBody(date){
+  const b=document.getElementById('lf-write-body'); if(!b)return;
+  if(DIARY_WRITE_TYPE==='running'){
+    b.innerHTML=`
+      <div class="lf-label">날짜</div><input class="lf-input" id="lf-date" type="date" value="${date}">
+      <div class="lf-row2">
+        <div><div class="lf-label">거리 (km)</div><input class="lf-input" id="lf-dist" type="number" step="0.01" placeholder="5.0"></div>
+        <div><div class="lf-label">시간 (분)</div><input class="lf-input" id="lf-time" type="number" step="0.1" placeholder="30"></div>
+      </div>
+      <div class="lf-label">장소</div><input class="lf-input" id="lf-place" type="text" placeholder="한강공원">
+      <div class="lf-label">메모</div><textarea class="lf-textarea" id="lf-diary" rows="3" placeholder="오늘 느낀 점..."></textarea>`;
+  } else {
+    b.innerHTML=`
+      <div class="lf-label">날짜</div><input class="lf-input" id="lf-date" type="date" value="${date}">
+      <div class="lf-label">제목</div><input class="lf-input" id="lf-title" type="text" placeholder="오늘의 WOD">
+      <div class="lf-label">WOD 내용</div><textarea class="lf-textarea" id="lf-wod" rows="4" placeholder="Fran&#10;21-15-9&#10;Thruster 43kg&#10;Pull-up"></textarea>
+      <div class="lf-label">기록</div><input class="lf-input" id="lf-record" type="text" placeholder="7분 23초">
+      <div class="lf-label">메모</div><textarea class="lf-textarea" id="lf-diary" rows="2" placeholder="오늘 느낀 점..."></textarea>`;
+  }
+}
+function lfSaveLog(){
+  const date=document.getElementById('lf-date')?.value; if(!date)return;
+  const diary=document.getElementById('lf-diary')?.value.trim()||'';
+  let entry;
+  if(DIARY_WRITE_TYPE==='running'){
+    entry={id:Date.now(),type:'running',date,distance:document.getElementById('lf-dist')?.value||'',time:document.getElementById('lf-time')?.value||'',place:document.getElementById('lf-place')?.value.trim()||'',diary};
+  } else {
+    const wod={content:document.getElementById('lf-wod')?.value.trim()||'',record:document.getElementById('lf-record')?.value.trim()||'',weights:lfParseWeights(document.getElementById('lf-wod')?.value||'')};
+    entry={id:Date.now(),type:'crossfit',date,title:document.getElementById('lf-title')?.value.trim()||'',wods:[wod],diary};
+  }
+  lfSaveLogs([entry,...lfGetLogs()]);
+  DIARY_SELECTED=date;
+  lfCloseWrite(); render();
+}
+
+/* ── 무게 추이 차트 ── */
+function lfChartSvg(data){
+  if(!data.length) return '<div style="text-align:center;color:var(--text-sub);padding:40px 0;font-size:13px">아직 기록이 없어요</div>';
+  const W=480,H=160,pL=44,pR=12,pT=16,pB=32;
+  const cW=W-pL-pR,cH=H-pT-pB;
+  const ws=data.map(d=>d.weight),minW=Math.min(...ws),maxW=Math.max(...ws),rng=maxW-minW||1;
+  const yMin=Math.max(0,minW-rng*0.2),yMax=maxW+rng*0.2,yRng=yMax-yMin;
+  const xOf=i=>pL+(data.length===1?cW/2:(i/(data.length-1))*cW);
+  const yOf=w=>pT+cH-((w-yMin)/yRng)*cH;
+  let grid='';
+  for(let i=0;i<=3;i++){const w=yMin+(yRng/3)*i;const yp=yOf(w);grid+=`<line x1="${pL}" y1="${yp}" x2="${W-pR}" y2="${yp}" stroke="#eee" stroke-width="1"/><text x="${pL-6}" y="${yp+4}" text-anchor="end" font-size="11" fill="#bbb">${Math.round(w)}</text>`;}
+  let xLabels='';
+  const step=Math.max(1,Math.ceil(data.length/5));
+  data.forEach((d,i)=>{ if(i%step===0||i===data.length-1) xLabels+=`<text x="${xOf(i)}" y="${H-4}" text-anchor="middle" font-size="11" fill="#bbb">${d.date.slice(5)}</text>`; });
+  const area=`M ${xOf(0)},${yOf(data[0].weight)} `+data.slice(1).map((d,i)=>`L ${xOf(i+1)},${yOf(d.weight)}`).join(' ')+` L ${xOf(data.length-1)},${pT+cH} L ${xOf(0)},${pT+cH} Z`;
+  const line=data.map((d,i)=>`${xOf(i)},${yOf(d.weight)}`).join(' ');
+  const maxV=Math.max(...ws),minV=Math.min(...ws);
+  const circles=data.map((d,i)=>{
+    const isMax=d.weight===maxV,isMin=d.weight===minV&&minV!==maxV,isLast=i===data.length-1;
+    const r=(isLast||isMax||isMin)?5:3;
+    let lbl='';
+    if(isMax||isLast) lbl=`<text x="${xOf(i)}" y="${yOf(d.weight)-9}" text-anchor="middle" font-size="11" fill="#4A7FC1" font-weight="600">${d.weight}kg</text>`;
+    else if(isMin) lbl=`<text x="${xOf(i)}" y="${yOf(d.weight)+17}" text-anchor="middle" font-size="11" fill="#aaa">${d.weight}kg</text>`;
+    return `${lbl}<circle cx="${xOf(i)}" cy="${yOf(d.weight)}" r="${r}" fill="#fff" stroke="#4A7FC1" stroke-width="2"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;overflow:visible"><defs><linearGradient id="lfGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4A7FC1" stop-opacity="0.15"/><stop offset="100%" stop-color="#4A7FC1" stop-opacity="0"/></linearGradient></defs>${grid}<path d="${area}" fill="url(#lfGrad)"/><polyline points="${line}" fill="none" stroke="#4A7FC1" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${circles}${xLabels}</svg>`;
+}
+function lfTrendSummary(data){
+  if(!data.length) return '';
+  const ws=data.map(d=>d.weight),maxW=Math.max(...ws),latest=data[data.length-1],first=data[0];
+  const diff=+(latest.weight-first.weight).toFixed(1);
+  const diffStr=(diff>=0?'+':'')+diff+'kg';
+  return `<div class="lf-trend-chips">
+    <div class="lf-trend-chip"><div class="chip-label">최고</div><div class="chip-value">${maxW}kg</div></div>
+    <div class="lf-trend-chip"><div class="chip-label">최근</div><div class="chip-value">${latest.weight}kg</div></div>
+    <div class="lf-trend-chip"><div class="chip-label">변화</div><div class="chip-value" style="color:${diff>0?'#4A7FC1':diff<0?'#e05050':'var(--dark)'}">${diffStr}</div></div>
+  </div>`;
+}
+function lfStartDemo() {
+  saveUser({token:'demo', nickname:'김서림'});
+  {
+    const d = (offset) => {
+      const dt = new Date(); dt.setDate(dt.getDate() + offset);
+      return dt.toLocaleDateString('sv-SE', {timeZone:'Asia/Seoul'});
+    };
+    lfSaveLogs([
+      {id:1,type:'running',date:d(0),distance:'5.2',time:'28.5',place:'한강공원',diary:'날씨 좋고 컨디션 최고. 페이스 잘 유지함.'},
+      {id:2,type:'crossfit',date:d(-1),title:'Fran',wods:[{content:'21-15-9\nThruster 43kg\nPull-up',record:'7분 42초',weights:[{movement:'Thruster',weight:'43',unit:'kg'}]}],diary:'Pull-up 세트 후반 힘들었지만 완주.'},
+      {id:3,type:'running',date:d(-3),distance:'8.0',time:'48',place:'올림픽공원',diary:'롱런. 후반 페이스 살짝 떨어짐.'},
+      {id:4,type:'crossfit',date:d(-5),title:'Helen',wods:[{content:'3 rounds\nRun 400m\nKettlebell swing 24kg × 21\nPull-up × 12',record:'12분 05초',weights:[{movement:'Kettlebell swing',weight:'24',unit:'kg'}]}],diary:'케틀벨 스윙 grip 한계. 다음엔 chalk 챙기자.'},
+      {id:5,type:'running',date:d(-7),distance:'3.5',time:'20',place:'동네',diary:'가볍게 회복 런.'},
+      {id:6,type:'crossfit',date:d(-9),title:'Deadlift day',wods:[{content:'5×5 Deadlift',record:'',weights:[{movement:'Deadlift',weight:'120',unit:'kg'}]}],diary:'120kg 5×5 완료. 다음 주 125kg 도전.'},
+      {id:7,type:'crossfit',date:d(-12),title:'',wods:[{content:'Deadlift 5×5',record:'',weights:[{movement:'Deadlift',weight:'115',unit:'kg'}]}],diary:''},
+      {id:8,type:'crossfit',date:d(-20),title:'',wods:[{content:'Deadlift 5×5',record:'',weights:[{movement:'Deadlift',weight:'110',unit:'kg'}]}],diary:''},
+    ]);
+  }
+  go('home');
+}
+
+function lfUpdateChart(){
+  const sel=document.getElementById('lf-move-sel'); if(!sel)return;
+  const mv=sel.value; if(!mv)return;
+  const data=lfMoveData(mv);
+  const ca=document.getElementById('lf-chart-area'); if(ca)ca.innerHTML=lfChartSvg(data);
+  const ts=document.getElementById('lf-trend-stats'); if(ts)ts.innerHTML=lfTrendSummary(data);
 }
 
 function home() {
@@ -739,32 +1083,51 @@ function home() {
     return `<p style="font-size:var(--t4);color:var(--accent);font-weight:600;margin:4px 0 0">${msg} · ${stageName}</p>`;
   })();
 
-  return `
-    <div style="padding:8px 0 16px">
-      <p style="margin:0 0 2px;font-size:var(--t3);color:var(--text-sub)">${greeting}</p>
-      <h1 style="font-size:32px;font-weight:800;color:var(--dark);margin:0">${USER.nickname}님</h1>
-      ${progressSummary}
-    </div>
-
-    ${lastCard}
-
-    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
-      <button class="btn-primary" style="padding:16px;font-size:var(--t2)" onclick="go('pain_site')">지금 시작하기</button>
-      <button class="btn-primary" style="background:var(--dark-light);padding:14px" onclick="goMyRecords()">내 기록 보기</button>
-      <button onclick="logout()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:var(--t4);color:var(--text-sub);cursor:pointer;width:100%">로그아웃</button>
+  const header = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0 16px">
+      <div>
+        <p style="margin:0 0 2px;font-size:var(--t3);color:var(--text-sub)">${greeting}</p>
+        <h1 style="font-size:32px;font-weight:800;color:var(--dark);margin:0">${USER.nickname}님</h1>
+        ${progressSummary}
+      </div>
+      <button onclick="logout()" style="background:none;border:none;font-size:var(--t4);color:var(--text-sub);cursor:pointer;padding:4px 0;margin-top:8px">로그아웃</button>
     </div>`;
+
+  const tabContent = {
+    diary: `
+      ${header}
+      ${lfCalendarHtml()}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <p style="margin:0;font-size:13px;font-weight:700;color:var(--text-sub)">${DIARY_SELECTED&&DIARY_SELECTED!==DIARY_TODAY?lfFmtDate(DIARY_SELECTED)+' 기록':'오늘 기록'}</p>
+        <button onclick="lfOpenWrite()" style="background:var(--dark);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer">+ 기록 추가</button>
+      </div>
+      ${lfLogsHtml()}`,
+    rehab: `
+      ${header}
+      ${lastCard}
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+        <button class="btn-primary" style="padding:16px;font-size:var(--t2)" onclick="go('pain_site')">지금 시작하기</button>
+        <button class="btn-primary" style="background:var(--dark-light);padding:14px" onclick="goMyRecords()">내 기록 보기</button>
+      </div>`,
+    weight: (() => {
+      const movements=lfAllMovements();
+      const sel=movements.length?`<select class="lf-movement-select" id="lf-move-sel" onchange="lfUpdateChart()">${movements.map(m=>`<option value="${lfEscape(m)}">${lfEscape(m)}</option>`).join('')}</select>`:'';
+      const initData=movements.length?lfMoveData(movements[0]):[];
+      return `${header}
+        ${movements.length?`${sel}<div id="lf-trend-stats">${lfTrendSummary(initData)}</div><div class="lf-chart-wrap" id="lf-chart-area">${lfChartSvg(initData)}</div>`:`<div style="display:flex;flex-direction:column;align-items:center;padding:40px 0;color:var(--text-sub);gap:8px"><i class="ti ti-chart-line" style="font-size:48px;opacity:0.3"></i><p style="margin:0;font-size:13px">기록 탭에서 크로스핏 WOD를 저장하면<br>무게 추이가 여기에 표시돼요</p></div>`}`;
+    })(),
+  };
+
+  return `<div style="padding-bottom:80px">${tabContent[S.tab] || tabContent.diary}</div>`;
 }
 
 function login() {
   return `
     <div style="display:flex;align-items:center;justify-content:center;padding-top:80px">
       <div style="width:100%;max-width:360px;margin:0 auto;display:flex;flex-direction:column;gap:16px;padding:0 24px">
-        <div style="position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:8px">
-          <button onclick="go('landing')" style="position:absolute;left:0;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-sub);padding:0">←</button>
-          <div style="text-align:center">
-            <h1 style="font-size:var(--t1);font-weight:700;color:var(--dark);margin:0">로그인</h1>
-            <p style="font-size:var(--t3);color:var(--text-sub);margin:4px 0 0">간편 로그인</p>
-          </div>
+        <div style="text-align:center;margin-bottom:8px">
+          <h1 style="font-size:var(--t1);font-weight:700;color:var(--dark);margin:0">로그인</h1>
+          <p style="font-size:var(--t3);color:var(--text-sub);margin:4px 0 0">간편 로그인</p>
         </div>
         <button style="background:#FEE500;color:#000;border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:10px;height:60px;font-size:var(--t2);font-weight:600;cursor:pointer;width:100%" onclick="kakaoLogin()">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="#000"><path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.73 1.61 5.13 4.03 6.57l-1.03 3.8 4.41-2.91A11.3 11.3 0 0 0 12 18.6c5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/></svg>
@@ -779,6 +1142,7 @@ function login() {
           구글로 로그인
         </button>
         <p style="font-size:var(--t4);color:var(--text-sub);text-align:center;margin:4px 0 0">로그인 시 이용약관 및 개인정보처리방침에 동의합니다</p>
+        <button onclick="lfStartDemo()" style="background:none;border:none;font-size:var(--t4);color:var(--text-sub);text-decoration:underline;cursor:pointer;margin-top:4px">데모로 시작</button>
       </div>
     </div>
 `;
@@ -1158,6 +1522,11 @@ function closeVideoModal() {
 function go(screen) {
   S.screen = screen;
   saveProgress();
+  render();
+}
+
+function switchTab(tab) {
+  S.tab = tab;
   render();
 }
 
