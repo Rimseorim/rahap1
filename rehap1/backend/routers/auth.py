@@ -11,7 +11,7 @@ from ..auth import hash_password, verify_password, create_access_token
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 NAVER_REDIRECT_URI = "https://web-production-28002.up.railway.app/auth/naver/callback"
-FRONTEND_URL = "https://rimseorim.github.io/rehap1"
+FRONTEND_URL = "https://rimseorim.github.io/rahap1"
 
 class SignupRequest(BaseModel):
     email: EmailStr
