@@ -652,6 +652,7 @@ function render() {
   }
   updateProgress(S.screen);
   window.scrollTo(0, 0);
+  if (S.screen === 'cause') saveRehabRecord();
   if (['route', 'test'].includes(S.screen)) acquireWakeLock();
   else releaseWakeLock();
   const screens = { landing, home, login, signup, my_records, pain_site, movement, question, test, cause, route, danger, complete, coming_soon };
@@ -954,7 +955,7 @@ function cause() {
       </div>
       <p style="margin:4px 0 0;font-size:var(--t4);color:var(--danger);font-weight:600">위 항목에 해당된다면 재활 전 전문의 진단을 먼저 받으세요.</p>
     </div>
-    <button class="btn-primary" onclick="saveRehabRecord();go('route')">재활 루트 보기</button>`;
+    <button class="btn-primary" onclick="go('route')">재활 루트 보기</button>`;
 }
 
 function route() {
