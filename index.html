@@ -630,7 +630,7 @@ function my_records() {
     <button class="btn-primary" style="background:var(--dark-light)" onclick="go('home')">홈으로</button>`;
 }
 
-async function saveRehabRecord() {
+async function saveRehabRecord(fromCause = false) {
   const ps = DATA?.pain_sites?.find(p => p.id === S.painSiteId);
   const cause = ps?.causes?.find(c => c.id === S.causeId);
   const stages = cause?.route?.stages || [];
@@ -668,8 +668,9 @@ async function saveRehabRecord() {
       cause_id: S.causeId || '',
       stage_index: S.stageIndex || 0,
       updated_at: new Date().toISOString(),
-      _stageName: stages[S.stageIndex]?.name || null,
+      _stageName: fromCause ? '원인 확정' : (stages[S.stageIndex]?.name || null),
       _totalStages: stages.length || 6,
+      _atCause: fromCause,
     };
   } catch(e) { showToast('기록 저장에 실패했습니다.'); }
 }
@@ -786,7 +787,7 @@ function updateProgress(screen) {
 /* ── 렌더 ── */
 function render() {
   const publicScreens = ['login', 'signup'];
-  if (S.screen === 'cause') saveRehabRecord();
+  if (S.screen === 'cause') saveRehabRecord(true);
   if (!USER && !publicScreens.includes(S.screen)) {
     S.screen = 'login';
   }
@@ -1086,7 +1087,7 @@ function home() {
     const pct = Math.round(((LAST_RECORD.stage_index + 1) / totalStages) * 100);
     return `
       <div class="card" style="cursor:pointer;border:1.5px solid var(--accent)"
-           onclick="resumeRecord('${LAST_RECORD.movement_id}','${LAST_RECORD.pain_site_id}','${LAST_RECORD.cause_id}',${LAST_RECORD.stage_index})">
+           onclick="${LAST_RECORD._atCause ? `lfGoToCause('${LAST_RECORD.movement_id}','${LAST_RECORD.pain_site_id}','${LAST_RECORD.cause_id}')` : `resumeRecord('${LAST_RECORD.movement_id}','${LAST_RECORD.pain_site_id}','${LAST_RECORD.cause_id}',${LAST_RECORD.stage_index})`}">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <span style="font-size:var(--t4);font-weight:600;color:var(--accent)">재활 진행 중</span>
           <span style="font-size:var(--t4);color:var(--text-sub)">${date}</span>
