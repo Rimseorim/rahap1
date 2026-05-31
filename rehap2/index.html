@@ -219,6 +219,7 @@
     .lf-dot { width:5px;height:5px;border-radius:50%; }
     .lf-dot.running { background:var(--accent); }
     .lf-dot.crossfit { background:var(--dark); }
+    .lf-dot.rehab { background:#3a8a3a; }
     .lf-legend { display:flex;gap:12px;font-size:11px;color:var(--text-sub);margin-bottom:12px; }
     .lf-legend-item { display:flex;align-items:center;gap:4px; }
 
@@ -229,6 +230,7 @@
     .lf-badge { font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px; }
     .lf-badge.running { background:rgba(74,127,193,0.12);color:var(--accent); }
     .lf-badge.crossfit { background:rgba(44,44,44,0.08);color:var(--dark); }
+    .lf-badge.rehab { background:rgba(80,160,80,0.12);color:#3a8a3a; }
     .lf-log-stats { display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-sub);margin-bottom:4px; }
     .lf-log-stats span { font-weight:700;color:var(--text); }
     .lf-log-diary { font-size:13px;color:var(--text-sub);margin-top:8px;line-height:1.6; }
@@ -628,7 +630,28 @@ function my_records() {
     <button class="btn-primary" style="background:var(--dark-light)" onclick="go('home')">홈으로</button>`;
 }
 
-async function saveRehabRecord() {
+async function saveRehabRecord(fromCause = false) {
+  const ps = DATA?.pain_sites?.find(p => p.id === S.painSiteId);
+  const cause = ps?.causes?.find(c => c.id === S.causeId);
+  const stages = cause?.route?.stages || [];
+  const today = new Date().toISOString().slice(0, 10);
+
+  // sportslogs에 오늘 날짜 재활 기록 저장 (같은 cause 중복 제외)
+  const existing = lfGetLogs();
+  const alreadySaved = existing.some(l => l.type === 'rehab' && l.date === today && l.causeId === S.causeId);
+  if (!alreadySaved) {
+    const entry = {
+      id: Date.now(), type: 'rehab', date: today,
+      movement: DATA?.name || S.movementId,
+      painSite: ps?.name || S.painSiteId,
+      cause: cause?.name || S.causeId,
+      causeId: S.causeId,
+      movementId: S.movementId,
+      painSiteId: S.painSiteId,
+    };
+    lfSaveLogs([entry, ...existing]);
+  }
+
   if (!USER) return;
   try {
     const result = await apiPost('/records/save', {
@@ -638,9 +661,6 @@ async function saveRehabRecord() {
       cause_id: S.causeId || '',
       stage_index: S.stageIndex || 0,
     });
-    const ps = DATA?.pain_sites?.find(p => p.id === S.painSiteId);
-    const cause = ps?.causes?.find(c => c.id === S.causeId);
-    const stages = cause?.route?.stages || [];
     LAST_RECORD = {
       id: result.id,
       movement_id: S.movementId,
@@ -648,8 +668,9 @@ async function saveRehabRecord() {
       cause_id: S.causeId || '',
       stage_index: S.stageIndex || 0,
       updated_at: new Date().toISOString(),
-      _stageName: stages[S.stageIndex]?.name || null,
+      _stageName: fromCause ? '원인 확정' : (stages[S.stageIndex]?.name || null),
       _totalStages: stages.length || 6,
+      _atCause: fromCause,
     };
   } catch(e) { showToast('기록 저장에 실패했습니다.'); }
 }
@@ -766,6 +787,7 @@ function updateProgress(screen) {
 /* ── 렌더 ── */
 function render() {
   const publicScreens = ['login', 'signup'];
+  if (S.screen === 'cause') saveRehabRecord(true);
   if (!USER && !publicScreens.includes(S.screen)) {
     S.screen = 'login';
   }
@@ -860,6 +882,7 @@ function lfCalendarHtml() {
     <div class="lf-legend">
       <div class="lf-legend-item"><div class="lf-dot running"></div>러닝</div>
       <div class="lf-legend-item"><div class="lf-dot crossfit"></div>크로스핏</div>
+      <div class="lf-legend-item"><div class="lf-dot rehab"></div>재활</div>
     </div>`;
 }
 function lfChangeMonth(d){ DIARY_VIEW_MONTH+=d; if(DIARY_VIEW_MONTH<0){DIARY_VIEW_MONTH=11;DIARY_VIEW_YEAR--;} if(DIARY_VIEW_MONTH>11){DIARY_VIEW_MONTH=0;DIARY_VIEW_YEAR++;} render(); }
@@ -872,7 +895,15 @@ function lfLogsHtml() {
   const label=date===DIARY_TODAY?'오늘':'';
   if(!logs.length) return `<div style="text-align:center;padding:24px 0;color:var(--text-sub);font-size:13px">${label?'오늘은':'이 날은'} 기록이 없어요</div>`;
   return logs.map(log=>{
-    if(log.type==='running'){
+    if(log.type==='rehab'){
+      const canNav = log.movementId && log.painSiteId && log.causeId;
+      return `<div class="lf-log-item" ${canNav?`onclick="lfGoToCause('${log.movementId}','${log.painSiteId}','${log.causeId}')" style="cursor:pointer"`:''}>
+        <div class="lf-log-header"><span class="lf-badge rehab">재활</span><button class="lf-del-btn" onclick="event.stopPropagation();lfDeleteLog(${log.id})">&times;</button></div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:4px">${lfEscape(log.movement||'')}</div>
+        <div style="font-size:13px;color:var(--text-sub)">${lfEscape(log.painSite||'')} · ${lfEscape(log.cause||'')}</div>
+        ${log.diary?`<div class="lf-log-diary">${lfEscape(log.diary).replace(/\n/g,'<br>')}</div>`:''}
+      </div>`;
+    } else if(log.type==='running'){
       const km=parseFloat(log.distance); const tm=parseFloat(log.time);
       const pace=(km>0&&tm>0)?lfFmtPace(tm/km):null;
       const stats=[];
@@ -904,6 +935,7 @@ function lfLogsHtml() {
   }).join('');
 }
 function lfDeleteLog(id){ if(!confirm('삭제할까요?'))return; lfSaveLogs(lfGetLogs().filter(l=>l.id!==id)); render(); }
+function lfGoToCause(movementId, painSiteId, causeId){ S.movementId=movementId; S.painSiteId=painSiteId; S.causeId=causeId; go('cause'); }
 
 /* ── 기록 쓰기 모달 ── */
 function lfOpenWrite(){
@@ -1055,7 +1087,7 @@ function home() {
     const pct = Math.round(((LAST_RECORD.stage_index + 1) / totalStages) * 100);
     return `
       <div class="card" style="cursor:pointer;border:1.5px solid var(--accent)"
-           onclick="resumeRecord('${LAST_RECORD.movement_id}','${LAST_RECORD.pain_site_id}','${LAST_RECORD.cause_id}',${LAST_RECORD.stage_index})">
+           onclick="${LAST_RECORD._atCause ? `lfGoToCause('${LAST_RECORD.movement_id}','${LAST_RECORD.pain_site_id}','${LAST_RECORD.cause_id}')` : `resumeRecord('${LAST_RECORD.movement_id}','${LAST_RECORD.pain_site_id}','${LAST_RECORD.cause_id}',${LAST_RECORD.stage_index})`}">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <span style="font-size:var(--t4);font-weight:600;color:var(--accent)">재활 진행 중</span>
           <span style="font-size:var(--t4);color:var(--text-sub)">${date}</span>
@@ -1310,7 +1342,7 @@ function cause() {
       </div>
       <p style="margin:4px 0 0;font-size:var(--t4);color:var(--danger);font-weight:600">위 항목에 해당된다면 재활 전 전문의 진단을 먼저 받으세요.</p>
     </div>
-    <button class="btn-primary" onclick="saveRehabRecord();go('route')">재활 루트 보기</button>`;
+    <button class="btn-primary" onclick="go('route')">재활 루트 보기</button>`;
 }
 
 function route() {
@@ -1466,6 +1498,8 @@ function complete() {
   }).join('');
 
   const nextStage = stages[S.stageIndex + 1];
+  const currentStageName = stages[S.stageIndex]?.name || '';
+  const needsRetest = isAllDone || currentStageName === '기초 재활';
   return `
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px">
       <div class="complete-wrap">
@@ -1478,20 +1512,21 @@ function complete() {
         <p class="t3" style="margin-top:8px">
           ${isAllDone
             ? '모든 단계를 마쳤습니다. 꾸준히 유지하세요.'
-            : `${stages[S.stageIndex].name} 단계를 마쳤습니다.`}
+            : `${currentStageName} 단계를 마쳤습니다.`}
         </p>
       </div>
       <div class="stage-wrap" style="justify-content:center">${stageIndicator}</div>
-      ${nextStage ? `
+      ${nextStage && !needsRetest ? `
         <div class="card" style="display:flex;flex-direction:column;gap:6px">
           <p class="t4" style="text-align:center">다음 단계</p>
           <p class="t2" style="text-align:center">${S.stageIndex + 2}단계 · ${nextStage.name}</p>
         </div>` : ''}
     </div>
-    ${nextStage
-      ? `<button class="btn-primary" onclick="goNextStageFromComplete()">다음 단계 시작</button>
-         <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="go('route')">이 단계 운동 다시 보기</button>`
-      : ''}
+    ${needsRetest
+      ? `<button class="btn-primary" onclick="goRetest()">직접 테스트로 재평가</button>
+         ${nextStage ? `<button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="goNextStageFromComplete()">테스트 없이 다음 단계</button>` : ''}`
+      : `<button class="btn-primary" onclick="goNextStageFromComplete()">다음 단계 시작</button>`}
+    <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="go('route')">이 단계 운동 다시 보기</button>
     <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="reset()">처음으로 돌아가기</button>`;
 }
 
@@ -1612,6 +1647,13 @@ function jumpToStage(i) {
   S.stageIndex = i;
   S.checkedItems = [];
   go('route');
+}
+
+function goRetest() {
+  const tests = getPainSite()?.tests;
+  if (!tests?.length) { showToast('테스트 데이터가 없습니다.'); return; }
+  S.testId = tests[0].id;
+  go('test');
 }
 
 function goNextStageFromComplete() {
