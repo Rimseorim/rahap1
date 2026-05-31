@@ -1523,7 +1523,7 @@ function complete() {
     ${nextStage
       ? `<button class="btn-primary" onclick="goNextStageFromComplete()">다음 단계 시작</button>
          <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="go('route')">이 단계 운동 다시 보기</button>`
-      : ''}
+      : `<button class="btn-primary" onclick="goRetest()">직접 테스트로 재평가</button>`}
     <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="reset()">처음으로 돌아가기</button>`;
 }
 
@@ -1644,6 +1644,13 @@ function jumpToStage(i) {
   S.stageIndex = i;
   S.checkedItems = [];
   go('route');
+}
+
+function goRetest() {
+  const tests = getPainSite()?.tests;
+  if (!tests?.length) { showToast('테스트 데이터가 없습니다.'); return; }
+  S.testId = tests[0].id;
+  go('test');
 }
 
 function goNextStageFromComplete() {
