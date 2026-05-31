@@ -1498,6 +1498,8 @@ function complete() {
   }).join('');
 
   const nextStage = stages[S.stageIndex + 1];
+  const currentStageName = stages[S.stageIndex]?.name || '';
+  const needsRetest = isAllDone || currentStageName === '기초 재활';
   return `
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px">
       <div class="complete-wrap">
@@ -1510,20 +1512,21 @@ function complete() {
         <p class="t3" style="margin-top:8px">
           ${isAllDone
             ? '모든 단계를 마쳤습니다. 꾸준히 유지하세요.'
-            : `${stages[S.stageIndex].name} 단계를 마쳤습니다.`}
+            : `${currentStageName} 단계를 마쳤습니다.`}
         </p>
       </div>
       <div class="stage-wrap" style="justify-content:center">${stageIndicator}</div>
-      ${nextStage ? `
+      ${nextStage && !needsRetest ? `
         <div class="card" style="display:flex;flex-direction:column;gap:6px">
           <p class="t4" style="text-align:center">다음 단계</p>
           <p class="t2" style="text-align:center">${S.stageIndex + 2}단계 · ${nextStage.name}</p>
         </div>` : ''}
     </div>
-    ${nextStage
-      ? `<button class="btn-primary" onclick="goNextStageFromComplete()">다음 단계 시작</button>
-         <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="go('route')">이 단계 운동 다시 보기</button>`
-      : `<button class="btn-primary" onclick="goRetest()">직접 테스트로 재평가</button>`}
+    ${needsRetest
+      ? `<button class="btn-primary" onclick="goRetest()">직접 테스트로 재평가</button>
+         ${nextStage ? `<button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="goNextStageFromComplete()">테스트 없이 다음 단계</button>` : ''}`
+      : `<button class="btn-primary" onclick="goNextStageFromComplete()">다음 단계 시작</button>`}
+    <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="go('route')">이 단계 운동 다시 보기</button>
     <button class="btn-primary" style="background:var(--text-sub);margin-top:8px" onclick="reset()">처음으로 돌아가기</button>`;
 }
 
