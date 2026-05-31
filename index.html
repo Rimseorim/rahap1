@@ -646,6 +646,8 @@ async function saveRehabRecord() {
       painSite: ps?.name || S.painSiteId,
       cause: cause?.name || S.causeId,
       causeId: S.causeId,
+      movementId: S.movementId,
+      painSiteId: S.painSiteId,
     };
     lfSaveLogs([entry, ...existing]);
   }
@@ -893,8 +895,9 @@ function lfLogsHtml() {
   if(!logs.length) return `<div style="text-align:center;padding:24px 0;color:var(--text-sub);font-size:13px">${label?'오늘은':'이 날은'} 기록이 없어요</div>`;
   return logs.map(log=>{
     if(log.type==='rehab'){
-      return `<div class="lf-log-item">
-        <div class="lf-log-header"><span class="lf-badge rehab">재활</span><button class="lf-del-btn" onclick="lfDeleteLog(${log.id})">&times;</button></div>
+      const canNav = log.movementId && log.painSiteId && log.causeId;
+      return `<div class="lf-log-item" ${canNav?`onclick="lfGoToCause('${log.movementId}','${log.painSiteId}','${log.causeId}')" style="cursor:pointer"`:''}>
+        <div class="lf-log-header"><span class="lf-badge rehab">재활</span><button class="lf-del-btn" onclick="event.stopPropagation();lfDeleteLog(${log.id})">&times;</button></div>
         <div style="font-weight:700;font-size:15px;margin-bottom:4px">${lfEscape(log.movement||'')}</div>
         <div style="font-size:13px;color:var(--text-sub)">${lfEscape(log.painSite||'')} · ${lfEscape(log.cause||'')}</div>
         ${log.diary?`<div class="lf-log-diary">${lfEscape(log.diary).replace(/\n/g,'<br>')}</div>`:''}
@@ -931,6 +934,7 @@ function lfLogsHtml() {
   }).join('');
 }
 function lfDeleteLog(id){ if(!confirm('삭제할까요?'))return; lfSaveLogs(lfGetLogs().filter(l=>l.id!==id)); render(); }
+function lfGoToCause(movementId, painSiteId, causeId){ S.movementId=movementId; S.painSiteId=painSiteId; S.causeId=causeId; go('cause'); }
 
 /* ── 기록 쓰기 모달 ── */
 function lfOpenWrite(){
