@@ -1556,7 +1556,6 @@ function recovery_complete() {
   </div>`;
   return `
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px">
-      ${bar}
       <div class="complete-wrap">
         <div class="complete-icon">
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -1566,6 +1565,7 @@ function recovery_complete() {
         <h1 class="t1">2단계 완료!</h1>
         <p class="t3" style="margin-top:8px">회복 테스트를 통과했습니다.</p>
       </div>
+      ${bar}
     </div>
     <button class="btn-primary" onclick="go('route')">3단계 재평가 시작하기</button>`;
 }
