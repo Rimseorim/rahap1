@@ -895,10 +895,17 @@ function updateProgress(screen) {
     pct   = Math.min(81, Math.round(30 + (S.stepDepth / maxDepth) * (82 - 30)));
     label = LABEL[screen] || '';
   } else {
+    // 고정 단계(pain_site/movement 등): 항상 같은 값이므로 회귀 방지 가드 없이 그대로 표시하고,
+    // 다음 세션/뒤로가기에서 이 화면으로 돌아와도 정확한 값이 뜨도록 회귀방지 기준선도 여기서 리셋
     pct   = PROGRESS[screen] || 50;
     label = LABEL[screen] || '';
+    S.maxPctReached = pct;
+    el('pb-label').textContent = label;
+    el('pb-pct').textContent = pct + '%';
+    el('pb-fill').style.width = pct + '%';
+    return;
   }
-  // 회귀 방지: 한번 도달한 퍼센트보다 낮게 표시되지 않도록 함
+  // 회귀 방지: 한번 도달한 퍼센트보다 낮게 표시되지 않도록 함 (질문/테스트/위험신호/재활루트 구간에만 적용)
   pct = Math.max(pct, S.maxPctReached || 0);
   S.maxPctReached = pct;
   el('pb-label').textContent = label;
