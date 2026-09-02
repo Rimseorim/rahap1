@@ -440,7 +440,8 @@ const S = {
   causeId: null,
   stageIndex: 0,
   checkedItems: [],
-  questionDepth: 0,
+  stepDepth: 0,
+  maxPctReached: 0,
   questionHistory: [],
   testHistory: [],
   isRedFlagDanger: false,
@@ -1861,7 +1862,8 @@ function selectPainSite(id) {
   S.questionId   = null;
   S.causeId      = null;
   S.stageIndex   = 0;
-  S.questionDepth = 0;
+  S.stepDepth = 0;
+  S.maxPctReached = 0;
   S.questionHistory = [];
   S.testHistory = [];
   goToMovement();
@@ -1887,7 +1889,7 @@ async function selectMovement(id) {
   S.movementId   = id;
   const site = getPainSite();
   S.questionId   = site.entry_question;
-  S.questionDepth = 0;
+  S.stepDepth = 0;
   S.questionHistory = [];
   S.testHistory = [];
   goToQuestion();
@@ -1905,7 +1907,7 @@ function selectChoice(next, choiceId) {
       savePhaseData(d);
     }
   }
-  S.questionDepth++;
+  S.stepDepth++;
   if (next === 'danger') {
     goToDanger();
   } else if (next.startsWith('q:')) {
@@ -1956,6 +1958,7 @@ function selectRetestResult(outcome) {
 }
 
 function selectTestResult(next, outcome) {
+  S.stepDepth++;
   if (next.startsWith('cause:')) {
     S.causeId = next.slice(6);
     const d = getPhaseData();
@@ -2034,7 +2037,7 @@ function reset() {
   Object.assign(S, {
     screen: 'home', painSiteId: null, painIntensity: null,
     movementId: null, questionId: null, testId: null, causeId: null,
-    stageIndex: 0, checkedItems: [], questionDepth: 0, isRedFlagDanger: false, retestMode: false
+    stageIndex: 0, checkedItems: [], stepDepth: 0, maxPctReached: 0, isRedFlagDanger: false, retestMode: false
   });
   localStorage.removeItem('rehab_progress');
   render();
