@@ -809,7 +809,7 @@ function getTest()      { return find(getPainSite().tests, S.testId); }
 
 const _maxDepthCache = new Map();
 function computeMaxDepth(painSite) {
-  const cacheKey = S.movementId + '|' + S.painSiteId;
+  const cacheKey = S.movementId + '|' + painSite.id;
   if (_maxDepthCache.has(cacheKey)) return _maxDepthCache.get(cacheKey);
 
   const questions = painSite.questions || [];
