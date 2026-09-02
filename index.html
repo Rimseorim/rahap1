@@ -806,6 +806,44 @@ function getMovement()  { return DATA; }
 function getPainSite()  { return find(DATA.pain_sites, S.painSiteId); }
 function getQuestion()  { return find(getPainSite().questions, S.questionId); }
 function getTest()      { return find(getPainSite().tests, S.testId); }
+
+const _maxDepthCache = new Map();
+function computeMaxDepth(painSite) {
+  const cacheKey = S.movementId + '|' + S.painSiteId;
+  if (_maxDepthCache.has(cacheKey)) return _maxDepthCache.get(cacheKey);
+
+  const questions = painSite.questions || [];
+  const tests = painSite.tests || [];
+  const findQ = id => questions.find(q => q.id === id);
+  const findT = id => tests.find(t => t.id === id);
+
+  function walk(kind, id, visiting) {
+    const nodeKey = kind + ':' + id;
+    if (visiting.has(nodeKey)) {
+      console.warn('[progress] cycle detected at', nodeKey, '— treating as leaf, maxDepth may be underestimated');
+      return 0;
+    }
+    visiting.add(nodeKey);
+    const node = kind === 'q' ? findQ(id) : findT(id);
+    if (!node) { visiting.delete(nodeKey); return 1; }
+    const nexts = kind === 'q'
+      ? (node.choices || []).map(c => c.next)
+      : [node.pass_next, node.fail_next, node.extra_choice && node.extra_choice.next].filter(Boolean);
+    let best = 0;
+    for (const next of nexts) {
+      if (typeof next !== 'string') continue;
+      if (next.startsWith('q:'))    best = Math.max(best, walk('q', next.slice(2), visiting));
+      else if (next.startsWith('test:')) best = Math.max(best, walk('test', next.slice(5), visiting));
+      // 'cause:'/'danger'는 추가 단계 없음(현재 노드에서 바로 종료)
+    }
+    visiting.delete(nodeKey);
+    return 1 + best;
+  }
+
+  const depth = painSite.entry_question ? walk('q', painSite.entry_question, new Set()) : 1;
+  _maxDepthCache.set(cacheKey, depth);
+  return depth;
+}
 function getCause()     { return find(getPainSite().causes, S.causeId); }
 
 // manifest 기반 — 전체 종목의 pain_site 수집
