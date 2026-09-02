@@ -1937,6 +1937,7 @@ async function selectMovement(id) {
   const site = getPainSite();
   S.questionId   = site.entry_question;
   S.stepDepth = 0;
+  S.maxPctReached = 0;
   S.questionHistory = [];
   S.testHistory = [];
   goToQuestion();
