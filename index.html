@@ -864,7 +864,7 @@ function getMovementsForSite() {
 /* ── 진행률 ── */
 const PROGRESS = {
   home: 0, pain_site: 10, movement: 30,
-  question: 55, test: 70, cause: 82, route: 92, session_feedback: 95, complete: 100, danger: 50, coming_soon: 35
+  cause: 82, route: 92, session_feedback: 95, complete: 100, coming_soon: 35
 };
 const LABEL = {
   pain_site: '통증 부위', movement: '동작 선택',
@@ -888,10 +888,19 @@ function updateProgress(screen) {
     else stepIdx = stageToStep[S.stageIndex] ?? 0;
     pct   = Math.round(base + (stepIdx / 4) * (100 - base));
     label = '재활 루트';
+  } else if (screen === 'question' || screen === 'test' || screen === 'danger') {
+    // 질문/테스트/위험신호 공통: 실제로 밟은 단계 수 기반 보간 (30%~82%)
+    const painSite = getPainSite();
+    const maxDepth = painSite ? computeMaxDepth(painSite) : 1;
+    pct   = Math.min(81, Math.round(30 + (S.stepDepth / maxDepth) * (82 - 30)));
+    label = LABEL[screen] || '';
   } else {
     pct   = PROGRESS[screen] || 50;
     label = LABEL[screen] || '';
   }
+  // 회귀 방지: 한번 도달한 퍼센트보다 낮게 표시되지 않도록 함
+  pct = Math.max(pct, S.maxPctReached || 0);
+  S.maxPctReached = pct;
   el('pb-label').textContent = label;
   el('pb-pct').textContent = pct + '%';
   el('pb-fill').style.width = pct + '%';
