@@ -1274,7 +1274,8 @@ function home() {
         <button class="btn-primary" style="padding:16px;font-size:var(--t2)" onclick="goToPainSite()">지금 시작하기</button>
         <button class="btn-primary" style="background:var(--dark-light);padding:14px" onclick="goMyRecords()">내 기록 보기</button>
       </div>
-      <p style="font-size:11px;color:var(--text-sub);text-align:center;line-height:1.5;margin-top:12px">본 서비스는 의료 진단·치료를 대체하지 않는 참고용 재활 정보입니다. 통증이 지속되거나 악화되면 전문의 진료를 받으세요.</p>`,
+      <p style="font-size:11px;color:var(--text-sub);text-align:center;line-height:1.5;margin-top:12px">본 서비스는 의료 진단·치료를 대체하지 않는 참고용 재활 정보입니다.</p>
+      <p style="font-size:11px;color:var(--text-sub);text-align:center;line-height:1.5;margin-top:4px">통증이 지속되거나 악화되면 전문의 진료를 받으세요.</p>`,
     weight: (() => {
       const movements=lfAllMovements();
       const sel=movements.length?`<select class="lf-movement-select" id="lf-move-sel" onchange="lfUpdateChart()">${movements.map(m=>`<option value="${lfEscape(m)}">${lfEscape(m)}</option>`).join('')}</select>`:'';
